@@ -5,18 +5,6 @@ Enables Discord [Rich Presence](https://discordapp.com/rich-presence) For Visual
   <img width="225px" height="400px" src="https://eggplants.org/fqac86.png">
 </p>
 
-Currently it has support for the following languages:
-* C#
-* C++
-* JavaScript
-* Python
-* PHP
-* Java
-* HTML
-* CSS
-* Go
-* C
-
 # Installing
 You can install the extension very simply by downloading it [here](https://marketplace.visualstudio.com/items?itemName=swanzana.discord-rpc-vs). Just open the file and follow the on-screen instructions.
 
