@@ -1,4 +1,4 @@
-# discord-rpc-vs
+# discord-rpc-vs [![Visual Studio Marketplace](https://img.shields.io/badge/visual%20studio%20marketplace-v1.0.0-brightgreen.svg)](https://marketplace.visualstudio.com/items?itemName=swanzana.discord-rpc-vs)
 >Enables Discord [Rich Presence](https://discordapp.com/rich-presence) For Visual Studio 2017. As you're developing, this extension will automatically update your status on Discord to tell the world what you're coding. You can install the latest release [here](https://marketplace.visualstudio.com/items?itemName=swanzana.discord-rpc-vs)
 
 <p align="center"> 
