@@ -2,7 +2,7 @@
 Enables Discord Rich Presence For Visual Studio 2017. As you're developing, this extension will automatically update your status on Discord to tell the world what you're coding.
 
 <p align="center"> 
-  <img width="200px" height="300px" src="https://eggplants.org/fqac86.png">
+  <img width="250px" height="400px" src="https://eggplants.org/fqac86.png">
 </p>
 
 Currently it has support for the following languages:
