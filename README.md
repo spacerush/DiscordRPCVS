@@ -8,8 +8,5 @@ Enables Discord [Rich Presence](https://discordapp.com/rich-presence) For Visual
 # Installing
 You can install the extension very simply by downloading it [here](https://marketplace.visualstudio.com/items?itemName=swanzana.discord-rpc-vs). Just open the file and follow the on-screen instructions.
 
-# Contributing
-If you feel like contributing, feel free to open a pull request, and your changes will be merged/updated. 
-
 # LICENSE
 [MIT LICENSE](https://github.com/Swan/discord-rpc-vs/blob/master/LICENSE)
