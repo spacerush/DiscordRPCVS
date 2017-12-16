@@ -1,8 +1,8 @@
 # discord-rpc-vs
-Enables Discord Rich Presence For Visual Studio 2017. As you're developing, this extension will automatically update your status on Discord to tell the world what you're coding.
+Enables Discord [Rich Presence](https://discordapp.com/rich-presence) For Visual Studio 2017. As you're developing, this extension will automatically update your status on Discord to tell the world what you're coding.
 
 <p align="center"> 
-  <img width="175px" height="400px" src="https://eggplants.org/fqac86.png">
+  <img width="225px" height="400px" src="https://eggplants.org/fqac86.png">
 </p>
 
 Currently it has support for the following languages:
