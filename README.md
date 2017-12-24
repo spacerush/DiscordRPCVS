@@ -9,6 +9,7 @@
 * Displays what file you're editing in Visual Studio.
 * Support for popular languages such as C#, C++, JavaScript, Python, Go, PHP, & More.
 * Shows how long you've been editing a particular file.
+* The ability to toggle the displaying of file names, solutions, and timestamps in your Rich Presence.
 
 # Contributing
 As I'm sure more more languages and file types are wanted to be supported, you can feel free to contribute. Feel free to fork the repository and open a pull request, and the extension shall be updated with the added changes.
