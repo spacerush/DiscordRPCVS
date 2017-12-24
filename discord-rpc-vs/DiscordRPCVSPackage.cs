@@ -18,6 +18,7 @@ using Microsoft.Win32;
 using EnvDTE;
 using System.IO;
 using System.Collections.Generic;
+using Configuration = discord_rpc_vs.Config.Configuration;
 
 namespace discord_rpc_vs
 {
@@ -52,12 +53,22 @@ namespace discord_rpc_vs
         /// </summary>
         public const string PackageGuidString = "ea99cd90-97ea-40a5-be3c-2f3377242800";
 
+        /// <summary>
+        ///     Discord Controller instance
+        /// </summary>
         private DiscordController DiscordController { get; set; } = new DiscordController();
 
+        /// <summary>
+        ///     DTE
+        /// </summary>
         private DTE _dte;
         private Events _dteEvents;
         private DocumentEvents _documentEvents;
 
+        /// <summary>
+        ///     Dictionary in which the key is the file extension, and the value is the 
+        ///     image key for RPC
+        /// </summary>
         private Dictionary<string, string> Languages = new Dictionary<string, string>()
         {
             { ".cs", "c-sharp"},
@@ -72,6 +83,12 @@ namespace discord_rpc_vs
             { ".c", "c" },
             { ".class", "java" },
         };
+
+        /// <summary>
+        ///     Global configuration 
+        /// </summary>
+        internal static Configuration Config { get; set; }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="DiscordRPCVS"/> class.
         /// </summary>
@@ -81,7 +98,6 @@ namespace discord_rpc_vs
             // any Visual Studio service because at this point the package object is created but
             // not sited yet inside Visual Studio environment. The place to do all the other
             // initialization is the Initialize method.
-            DiscordRPCVS.Initialize(this);
         }
 
         #region Package Members
@@ -92,6 +108,10 @@ namespace discord_rpc_vs
         /// </summary>
         protected override void Initialize()
         {
+            // Try to deserialize the config file, it should throw an error if it doesn't exist. 
+            // in that case, we'll want to create a new instance and save it.
+            Config = Configuration.Deserialize();
+
             _dte = (DTE)GetService(typeof(SDTE));
             _dteEvents = _dte.Events;
             _dteEvents.WindowEvents.WindowActivated += OnWindowSwitch;
@@ -110,6 +130,9 @@ namespace discord_rpc_vs
 
             DiscordRPC.UpdatePresence(ref DiscordController.presence);
             base.Initialize();
+            ToggleFileNameDisplay.Initialize(this);
+            ToggleProjectNameDisplay.Initialize(this);
+            ToggleTimestampDisplay.Initialize(this);
         }
 
         /// <summary>
@@ -124,15 +147,22 @@ namespace discord_rpc_vs
 
             // Update the RichPresence
             DiscordController.presence = new DiscordRPC.RichPresence()
-            {
-                details = Path.GetFileName(GetExactPathName(windowActivated.Document.FullName)),
-                state = "Developing " + Path.GetFileNameWithoutExtension(_dte.Solution.FileName),
+            {   
                 largeImageKey = "visualstudio",
                 largeImageText = "Visual Studio",
                 smallImageKey =  (Languages.ContainsKey(ext)) ? Languages[ext] : "smallvs",
                 smallImageText = (Languages.ContainsKey(ext)) ? Languages[ext] : "",
-                startTimestamp = (Int32)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds
             };
+
+            // Add things to the presence based on config.
+            if (Config.DisplayFileName)
+                DiscordController.presence.details = Path.GetFileName(GetExactPathName(windowActivated.Document.FullName));
+
+            if (Config.DisplayProject)
+                DiscordController.presence.state = "Developing " + Path.GetFileNameWithoutExtension(_dte.Solution.FileName);
+
+            if (Config.DisplayTimestamp)
+                DiscordController.presence.startTimestamp = (Int32) (DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
 
             DiscordRPC.UpdatePresence(ref DiscordController.presence);
         }

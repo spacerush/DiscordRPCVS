@@ -51,13 +51,17 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Config\Configuration.cs" />
     <Compile Include="DiscordController.cs" />
     <Compile Include="DiscordRPC.cs" />
-    <Compile Include="DiscordRPCVS.cs" />
     <Compile Include="DiscordRPCVSPackage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ToggleFileNameDisplay.cs" />
+    <Compile Include="ToggleProjectNameDisplay.cs" />
+    <Compile Include="ToggleTimestampDisplay.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="Key.snk" />
     <None Include="packages.config" />
     <None Include="source.extension.vsixmanifest">
@@ -65,8 +69,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Resources\ToggleTimestampDisplay.png" />
     <VSCTCompile Include="DiscordRPCVSPackage.vsct">
       <ResourceName>Menus.ctmenu</ResourceName>
+      <SubType>Designer</SubType>
     </VSCTCompile>
     <Content Include="discord-rpc.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -159,6 +165,9 @@
       <HintPath>..\packages\Microsoft.VisualStudio.Validation.15.0.82\lib\net45\Microsoft.VisualStudio.Validation.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="stdole, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
@@ -173,6 +182,7 @@
     <EmbeddedResource Include="VSPackage.resx">
       <MergeWithCTO>true</MergeWithCTO>
       <ManifestResourceName>VSPackage</ManifestResourceName>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

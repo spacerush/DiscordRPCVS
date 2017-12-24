@@ -1,5 +1,5 @@
 ﻿//------------------------------------------------------------------------------
-// <copyright file="DiscordRPCVS.cs" company="Company">
+// <copyright file="ToggleFileNameDisplay.cs" company="Company">
 //     Copyright (c) Company.  All rights reserved.
 // </copyright>
 //------------------------------------------------------------------------------
@@ -15,12 +15,12 @@ namespace discord_rpc_vs
     /// <summary>
     /// Command handler
     /// </summary>
-    internal sealed class DiscordRPCVS
+    internal sealed class ToggleFileNameDisplay
     {
         /// <summary>
         /// Command ID.
         /// </summary>
-        public const int CommandId = 0x0100;
+        public const int CommandId = 4129;
 
         /// <summary>
         /// Command menu group (command set GUID).
@@ -33,11 +33,11 @@ namespace discord_rpc_vs
         private readonly Package package;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="DiscordRPCVS"/> class.
+        /// Initializes a new instance of the <see cref="ToggleFileNameDisplay"/> class.
         /// Adds our command handlers for menu (commands must exist in the command table file)
         /// </summary>
         /// <param name="package">Owner package, not null.</param>
-        private DiscordRPCVS(Package package)
+        private ToggleFileNameDisplay(Package package)
         {
             if (package == null)
             {
@@ -58,7 +58,7 @@ namespace discord_rpc_vs
         /// <summary>
         /// Gets the instance of the command.
         /// </summary>
-        public static DiscordRPCVS Instance
+        public static ToggleFileNameDisplay Instance
         {
             get;
             private set;
@@ -81,7 +81,7 @@ namespace discord_rpc_vs
         /// <param name="package">Owner package, not null.</param>
         public static void Initialize(Package package)
         {
-            Instance = new DiscordRPCVS(package);
+            Instance = new ToggleFileNameDisplay(package);
         }
 
         /// <summary>
@@ -93,8 +93,12 @@ namespace discord_rpc_vs
         /// <param name="e">Event args.</param>
         private void MenuItemCallback(object sender, EventArgs e)
         {
-            string message = string.Format(CultureInfo.CurrentCulture, "Inside {0}.MenuItemCallback()", this.GetType().FullName);
-            string title = "DiscordRPCVS";
+            // Turn the config variable off/on
+            DiscordRPCVSPackage.Config.DisplayFileName = !DiscordRPCVSPackage.Config.DisplayFileName;
+            DiscordRPCVSPackage.Config.Save();
+
+            var message = (DiscordRPCVSPackage.Config.DisplayFileName) ? "You are now displaying the files you edit on Discord." : "You are now hiding the files you edit on Discord.";
+            var title = "DiscordRPC";
 
             // Show a message box to prove we were here
             VsShellUtilities.ShowMessageBox(
