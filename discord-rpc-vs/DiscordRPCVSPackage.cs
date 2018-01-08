@@ -18,6 +18,7 @@ using Microsoft.Win32;
 using EnvDTE;
 using System.IO;
 using System.Collections.Generic;
+using System.Windows.Forms;
 using Configuration = discord_rpc_vs.Config.Configuration;
 
 namespace discord_rpc_vs
@@ -80,7 +81,8 @@ namespace discord_rpc_vs
             { ".java", "java" },
             { ".go", "go" },
             { ".php", "php" },
-            { ".c", "c" },
+            { ".c", "clang" },
+            { ".h", "clang" },
             { ".class", "java" },
         };
 

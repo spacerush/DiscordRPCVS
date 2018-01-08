@@ -22,7 +22,7 @@ namespace discord_rpc_vs
         /// </summary>
         public const int CommandId = 4129;
 
-        /// <summary>
+        /// <summary
         /// Command menu group (command set GUID).
         /// </summary>
         public static readonly Guid CommandSet = new Guid("8b0ef413-de58-42e0-aa72-1dffd0b4c664");
