@@ -53,6 +53,7 @@
             must be the actual index (1-based) of the bitmap inside the bitmap strip. -->
       <Bitmap guid="guidImages" href="Resources\DiscordRPCVS.png" usedList="bmpPic1, bmpPic2, bmpPicSearch, bmpPicX, bmpPicArrows, bmpPicStrikethrough" />
       <Bitmap guid="guidImages3" href="Resources\ToggleTimestampDisplay.png" usedList="bmpPic1, bmpPic2, bmpPicSearch, bmpPicX, bmpPicArrows, bmpPicStrikethrough" />
+      <Bitmap guid="guidImages4" href="Resources\ToggleTimestampReset.png" usedList="bmpPic1, bmpPic2, bmpPicSearch, bmpPicX, bmpPicArrows, bmpPicStrikethrough" />
     </Bitmaps>
     <Buttons>
       <Button guid="guidDiscordRPCVSPackageCmdSet" id="cmdidToggleFileNameDisplay" priority="0x0100" type="Button">
@@ -76,6 +77,13 @@
           <ButtonText>Discord - Toggle Timestamp Display</ButtonText>
         </Strings>
       </Button>
+      <Button guid="guidDiscordRPCVSPackageCmdSet" id="cmdidToggleTimestampReset" priority="0x0100" type="Button">
+        <Parent guid="guidDiscordRPCVSPackageCmdSet" id="MyMenuGroup" />
+        <Icon guid="guidImages4" id="bmpPic1" />
+        <Strings>
+          <ButtonText>Discord - Toggle Timestamp Reset</ButtonText>
+        </Strings>
+      </Button>
     </Buttons>
   </Commands>
 
@@ -90,6 +98,7 @@
       <IDSymbol value="4129" name="cmdidToggleFileNameDisplay" /> 
       <IDSymbol value="4130" name="cmdidToggleProjectNameDisplay" />
       <IDSymbol value="4131" name="cmdidToggleTimestampDisplay" />
+      <IDSymbol value="4132" name="cmdidToggleTimestampReset" />
     </GuidSymbol>
 
     <GuidSymbol name="guidImages" value="{8d82f52c-9bb1-4cfa-a758-0af676ac9e60}">
@@ -120,6 +129,15 @@
     </GuidSymbol>
   
     <GuidSymbol value="{afb43276-8e06-4239-86c4-877b683888e5}" name="guidImages3">
+      <IDSymbol name="bmpPic1" value="1" />
+      <IDSymbol name="bmpPic2" value="2" />
+      <IDSymbol name="bmpPicSearch" value="3" />
+      <IDSymbol name="bmpPicX" value="4" />
+      <IDSymbol name="bmpPicArrows" value="5" />
+      <IDSymbol name="bmpPicStrikethrough" value="6" />
+    </GuidSymbol>
+  
+    <GuidSymbol value="{70b54b03-3b1e-4ae5-9477-76be4dfa92ba}" name="guidImages4">
       <IDSymbol name="bmpPic1" value="1" />
       <IDSymbol name="bmpPic2" value="2" />
       <IDSymbol name="bmpPicSearch" value="3" />

@@ -26,6 +26,11 @@ namespace discord_rpc_vs.Config
         public bool DisplayTimestamp { get; set; }
 
         /// <summary>
+        ///     Dictates whether or not to reset the timestamp
+        /// </summary>
+        public bool ResetTimestamp { get; set; } = true;
+
+        /// <summary>
         ///     Deserializes the config into a Config object
         /// </summary>
         /// <returns></returns>
@@ -40,16 +45,23 @@ namespace discord_rpc_vs.Config
                 config.DisplayTimestamp = true;
                 config.DisplayFileName = true;
                 config.DisplayProject = true;
+                config.ResetTimestamp = true;
                 config.Save();
                 return config;
             }
+
+            Configuration returnConfig;
 
             // Deserialize it if it already exists.
             using (var file = File.OpenText(path))
             {
                 var serializer = new JsonSerializer();
-                return (Configuration)serializer.Deserialize(file, typeof(Configuration));
+                returnConfig = (Configuration) serializer.Deserialize(file, typeof(Configuration));
             }
+
+            returnConfig.Save();
+
+            return returnConfig;
         }
 
         /// <summary>

@@ -59,6 +59,7 @@
     <Compile Include="ToggleFileNameDisplay.cs" />
     <Compile Include="ToggleProjectNameDisplay.cs" />
     <Compile Include="ToggleTimestampDisplay.cs" />
+    <Compile Include="ToggleTimestampReset.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -70,6 +71,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\ToggleTimestampDisplay.png" />
+    <Content Include="Resources\ToggleTimestampReset.png" />
     <VSCTCompile Include="DiscordRPCVSPackage.vsct">
       <ResourceName>Menus.ctmenu</ResourceName>
       <SubType>Designer</SubType>

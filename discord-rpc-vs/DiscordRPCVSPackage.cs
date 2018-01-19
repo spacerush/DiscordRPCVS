@@ -60,6 +60,16 @@ namespace discord_rpc_vs
         private DiscordController DiscordController { get; set; } = new DiscordController();
 
         /// <summary>
+        ///     Keeps track of if we have already initialized the timestamp
+        /// </summary>
+        private bool InitializedTimestamp { get; set; }
+
+        /// <summary>
+        ///     The initial timestamp
+        /// </summary>
+        private long InitialTimestamp { get; set; }
+
+        /// <summary>
         ///     DTE
         /// </summary>
         private DTE _dte;
@@ -119,22 +129,13 @@ namespace discord_rpc_vs
             _dteEvents.WindowEvents.WindowActivated += OnWindowSwitch;
 
             DiscordController.Initialize();
-            DiscordController.presence = new DiscordRPC.RichPresence()
-            {
-                details = "Idle",
-                state = "Looking for a project",
-                largeImageKey = "visualstudio",
-                largeImageText = "Visual Studio",
-                smallImageKey = "smallvs",
-
-                startTimestamp = (Int32)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds
-            };
 
             DiscordRPC.UpdatePresence(ref DiscordController.presence);
             base.Initialize();
             ToggleFileNameDisplay.Initialize(this);
             ToggleProjectNameDisplay.Initialize(this);
             ToggleTimestampDisplay.Initialize(this);
+            ToggleTimestampReset.Initialize(this);
         }
 
         /// <summary>
@@ -163,8 +164,20 @@ namespace discord_rpc_vs
             if (Config.DisplayProject)
                 DiscordController.presence.state = "Developing " + Path.GetFileNameWithoutExtension(_dte.Solution.FileName);
 
-            if (Config.DisplayTimestamp)
-                DiscordController.presence.startTimestamp = (Int32) (DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
+            // Initialize timestamp
+            if (Config.DisplayTimestamp && !InitializedTimestamp)
+            {
+                DiscordController.presence.startTimestamp = (Int32)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
+                InitialTimestamp = DiscordController.presence.startTimestamp;
+                InitializedTimestamp = true;
+            }
+
+            // Reset it
+            if (Config.ResetTimestamp && InitializedTimestamp)
+                DiscordController.presence.startTimestamp = (Int32)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
+            // Set it equal to the initial timestamp (To not reset)
+            else
+                DiscordController.presence.startTimestamp = InitialTimestamp;
 
             DiscordRPC.UpdatePresence(ref DiscordController.presence);
         }
