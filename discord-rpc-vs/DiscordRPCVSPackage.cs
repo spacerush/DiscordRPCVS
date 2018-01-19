@@ -173,10 +173,10 @@ namespace discord_rpc_vs
             }
 
             // Reset it
-            if (Config.ResetTimestamp && InitializedTimestamp)
+            if (Config.ResetTimestamp && InitializedTimestamp && Config.DisplayTimestamp)
                 DiscordController.presence.startTimestamp = (Int32)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
             // Set it equal to the initial timestamp (To not reset)
-            else
+            else if (Config.DisplayTimestamp && !Config.ResetTimestamp)
                 DiscordController.presence.startTimestamp = InitialTimestamp;
 
             DiscordRPC.UpdatePresence(ref DiscordController.presence);
