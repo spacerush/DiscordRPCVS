@@ -206,6 +206,16 @@ namespace discord_rpc_vs
             }
         }
 
+        /// <summary>
+        /// Called to ask the package if the shell can be closed. By default this method returns canClose as true and S_OK.
+        /// </summary>
+        /// <param name="canClose">Returns true if the shell can be closed, otherwise false.</param>
+        /// <returns>S_OK(0) if the method succeeded, otherwise an error code.</returns>
+        protected override int QueryClose(out bool canClose)
+        {
+            DiscordRPC.Shutdown();
+            return base.QueryClose(out canClose);
+        }
         #endregion
     }
 }
