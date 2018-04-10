@@ -70,8 +70,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Resources\ToggleTimestampDisplay.png" />
-    <Content Include="Resources\ToggleTimestampReset.png" />
     <VSCTCompile Include="DiscordRPCVSPackage.vsct">
       <ResourceName>Menus.ctmenu</ResourceName>
       <SubType>Designer</SubType>
@@ -80,7 +78,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Resources\DiscordRPCVS.png" />
     <Content Include="Resources\DiscordRPCVSPackage.ico" />
   </ItemGroup>
   <ItemGroup>

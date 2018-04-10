@@ -4,21 +4,14 @@
 // </copyright>
 //------------------------------------------------------------------------------
 
-using System;
-using System.ComponentModel.Design;
-using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
-using System.Globalization;
-using System.Runtime.InteropServices;
-using Microsoft.VisualStudio;
-using Microsoft.VisualStudio.OLE.Interop;
+using EnvDTE;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
-using Microsoft.Win32;
-using EnvDTE;
-using System.IO;
+using System;
 using System.Collections.Generic;
-using System.Windows.Forms;
+using System.Diagnostics.CodeAnalysis;
+using System.IO;
+using System.Runtime.InteropServices;
 using Configuration = discord_rpc_vs.Config.Configuration;
 
 namespace discord_rpc_vs
@@ -43,7 +36,7 @@ namespace discord_rpc_vs
     [PackageRegistration(UseManagedResourcesOnly = true)]
     [InstalledProductRegistration("#110", "#112", "1.0", IconResourceID = 400)] // Info on this package for Help/About
     [ProvideMenuResource("Menus.ctmenu", 1)]
-    [ProvideAutoLoadAttribute("{F1536EF8-92EC-443C-9ED7-FDADF150DA82}")]
+    [ProvideAutoLoad(UIContextGuids80.NoSolution)]
     [ProvideAutoLoad(UIContextGuids80.SolutionExists)]
     [Guid(DiscordRPCVSPackage.PackageGuidString)]
     [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "pkgdef, VS and vsixmanifest are valid VS terms")]
@@ -74,7 +67,6 @@ namespace discord_rpc_vs
         /// </summary>
         private DTE _dte;
         private Events _dteEvents;
-        private DocumentEvents _documentEvents;
 
         /// <summary>
         ///     Dictionary in which the key is the file extension, and the value is the 
