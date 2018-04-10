@@ -4,11 +4,9 @@
 // </copyright>
 //------------------------------------------------------------------------------
 
+using Microsoft.VisualStudio.Shell;
 using System;
 using System.ComponentModel.Design;
-using System.Globalization;
-using Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio.Shell.Interop;
 
 namespace discord_rpc_vs
 {
@@ -39,18 +37,13 @@ namespace discord_rpc_vs
         /// <param name="package">Owner package, not null.</param>
         private ToggleTimestampDisplay(Package package)
         {
-            if (package == null)
-            {
-                throw new ArgumentNullException("package");
-            }
+            this.package = package ?? throw new ArgumentNullException(nameof(package));
 
-            this.package = package;
-
-            OleMenuCommandService commandService = this.ServiceProvider.GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
-            if (commandService != null)
+            if (ServiceProvider.GetService(typeof(IMenuCommandService)) is OleMenuCommandService commandService)
             {
                 var menuCommandID = new CommandID(CommandSet, CommandId);
-                var menuItem = new MenuCommand(this.MenuItemCallback, menuCommandID);
+                var menuItem = new OleMenuCommand(MenuItemCallback, menuCommandID);
+                menuItem.BeforeQueryStatus += ToggleTimestampDisplay_BeforeQueryStatus;
                 commandService.AddCommand(menuItem);
             }
         }
@@ -96,18 +89,14 @@ namespace discord_rpc_vs
             // Turn the config variable off/on
             DiscordRPCVSPackage.Config.DisplayTimestamp = !DiscordRPCVSPackage.Config.DisplayTimestamp;
             DiscordRPCVSPackage.Config.Save();
+        }
 
-            var message = (DiscordRPCVSPackage.Config.DisplayTimestamp) ? "You are now displaying how long you edit files on Discord." : "You are now hiding how long you edit files Discord.";
-            var title = "DiscordRPC";
-
-            // Show a message box to prove we were here
-            VsShellUtilities.ShowMessageBox(
-                this.ServiceProvider,
-                message,
-                title,
-                OLEMSGICON.OLEMSGICON_INFO,
-                OLEMSGBUTTON.OLEMSGBUTTON_OK,
-                OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
+        private void ToggleTimestampDisplay_BeforeQueryStatus(object sender, EventArgs e)
+        {
+            if (sender is OleMenuCommand menuCommand)
+            {
+                menuCommand.Checked = DiscordRPCVSPackage.Config.DisplayTimestamp;
+            }
         }
     }
 }
