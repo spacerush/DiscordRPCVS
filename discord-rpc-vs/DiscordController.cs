@@ -11,7 +11,7 @@ namespace discord_rpc_vs
         public DiscordRPC.RichPresence presence;
         DiscordRPC.EventHandlers handlers;
         public string applicationId = "391385173045936131";
-        public string optionalSteamId;
+        public string optionalSteamId = string.Empty;
 
         /// <summary>
         ///     Initializes Discord RPC
