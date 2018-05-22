@@ -85,7 +85,7 @@ namespace discord_rpc_vs
         private void MenuItemCallback(object sender, EventArgs e)
         {
             // Turn the config variable off/on
-            DiscordRPCVSPackage.Config.PresenceDisabled = !DiscordRPCVSPackage.Config.PresenceDisabled;
+            DiscordRPCVSPackage.Config.PresenceEnabled = !DiscordRPCVSPackage.Config.PresenceEnabled;
             DiscordRPCVSPackage.Config.Save();
 
             CheckIfShouldDisable();
@@ -95,21 +95,30 @@ namespace discord_rpc_vs
         {
             if (sender is OleMenuCommand menuCommand)
             {
-                menuCommand.Checked = DiscordRPCVSPackage.Config.PresenceDisabled;
+                menuCommand.Checked = DiscordRPCVSPackage.Config.PresenceEnabled;
                 CheckIfShouldDisable();
 
-                if (!DiscordRPCVSPackage.Config.PresenceDisabled) EnableRPC();
+                if (DiscordRPCVSPackage.Config.PresenceEnabled)
+                {
+                    EnableRPC();
+                }
             }
         }
 
+        /// <summary>
+        /// Checks if presebce should be disabled or not
+        /// </summary>
         private void CheckIfShouldDisable()
         {
-            if (DiscordRPCVSPackage.Config.PresenceDisabled)
+            if (!DiscordRPCVSPackage.Config.PresenceEnabled)
             {
                 DiscordRPC.Shutdown();
             }
         }
 
+        /// <summary>
+        /// Enables Presence
+        /// </summary>
         private void EnableRPC()
         {
             new DiscordController().Initialize();

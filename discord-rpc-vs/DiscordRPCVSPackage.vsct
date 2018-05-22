@@ -48,7 +48,7 @@
       <Button guid="guidDiscordRPCVSPackageCmdSet" id="cmdidTogglePresence" priority="0x0100" type="Button">
         <Parent guid="guidDiscordRPCVSPackageCmdSet" id="MyMenuGroup" />
         <Strings>
-          <ButtonText>Disable Discord Presence</ButtonText>
+          <ButtonText>Enable Discord Presence</ButtonText>
         </Strings>
       </Button>
       <Button guid="guidDiscordRPCVSPackageCmdSet" id="cmdidToggleFileNameDisplay" priority="0x0100" type="Button">
