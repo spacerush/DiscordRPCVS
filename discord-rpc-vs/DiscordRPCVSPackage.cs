@@ -120,14 +120,21 @@ namespace discord_rpc_vs
             _dteEvents = _dte.Events;
             _dteEvents.WindowEvents.WindowActivated += OnWindowSwitch;
 
-            DiscordController.Initialize();
+            if (Config.PresenceEnabled)
+            {
+                DiscordController.Initialize();
 
-            DiscordRPC.UpdatePresence(ref DiscordController.presence);
+                DiscordRPC.UpdatePresence(ref DiscordController.presence);
+            }
+
             base.Initialize();
+            TogglePresence.Initialize(this);
             ToggleFileNameDisplay.Initialize(this);
             ToggleProjectNameDisplay.Initialize(this);
             ToggleTimestampDisplay.Initialize(this);
             ToggleTimestampReset.Initialize(this);
+
+            TogglePresence.Instance.SetPresence(DiscordController.presence);
         }
 
         /// <summary>
@@ -171,7 +178,8 @@ namespace discord_rpc_vs
             else if (Config.DisplayTimestamp && !Config.ResetTimestamp)
                 DiscordController.presence.startTimestamp = InitialTimestamp;
 
-            DiscordRPC.UpdatePresence(ref DiscordController.presence);
+            if (Config.PresenceEnabled)
+                DiscordRPC.UpdatePresence(ref DiscordController.presence);
         }
 
         /// <summary>

@@ -10,20 +10,26 @@ namespace discord_rpc_vs.Config
 {
     internal class Configuration
     {
+
+        /// <summary>
+        ///     Dictates whether or not to enable presence
+        /// </summary>
+        public bool PresenceEnabled { get; set; } = true;
+
         /// <summary>
         ///     Dictates whether or not to display the file name you are working on
         /// </summary>
-        public bool DisplayFileName { get; set; }
+        public bool DisplayFileName { get; set; } = true;
 
         /// <summary>
         ///     Dictates whether or not to display the current project you are working on.
         /// </summary>
-        public bool DisplayProject { get; set; }
+        public bool DisplayProject { get; set; } = true;
 
         /// <summary>
         ///     Dictates whether or not to display how long you have been working on a file for.
         /// </summary>
-        public bool DisplayTimestamp { get; set; }
+        public bool DisplayTimestamp { get; set; } = true;
 
         /// <summary>
         ///     Dictates whether or not to reset the timestamp
@@ -42,6 +48,7 @@ namespace discord_rpc_vs.Config
             if (!File.Exists(path))
             {
                 var config = new Configuration();
+                config.PresenceEnabled = true;
                 config.DisplayTimestamp = true;
                 config.DisplayFileName = true;
                 config.DisplayProject = true;

@@ -1,24 +1,22 @@
-﻿//------------------------------------------------------------------------------
-// <copyright file="ToggleFileNameDisplay.cs" company="Company">
-//     Copyright (c) Company.  All rights reserved.
-// </copyright>
-//------------------------------------------------------------------------------
-
-using Microsoft.VisualStudio.Shell;
+﻿using Microsoft.VisualStudio.Shell;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.Design;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace discord_rpc_vs
 {
     /// <summary>
     /// Command handler
     /// </summary>
-    internal sealed class ToggleFileNameDisplay
+    internal sealed class TogglePresence
     {
         /// <summary>
         /// Command ID.
         /// </summary>
-        public const int CommandId = 4129;
+        public const int CommandId = 4133;
 
         /// <summary
         /// Command menu group (command set GUID).
@@ -30,12 +28,15 @@ namespace discord_rpc_vs
         /// </summary>
         private readonly Package package;
 
+        private DiscordRPC.RichPresence presence;
+        public void SetPresence(DiscordRPC.RichPresence richPresence) { presence = richPresence; }
+
         /// <summary>
-        /// Initializes a new instance of the <see cref="ToggleFileNameDisplay"/> class.
+        /// Initializes a new instance of the <see cref="TogglePresence"/> class.
         /// Adds our command handlers for menu (commands must exist in the command table file)
         /// </summary>
         /// <param name="package">Owner package, not null.</param>
-        private ToggleFileNameDisplay(Package package)
+        private TogglePresence(Package package)
         {
             this.package = package ?? throw new ArgumentNullException(nameof(package));
 
@@ -43,7 +44,7 @@ namespace discord_rpc_vs
             {
                 var menuCommandID = new CommandID(CommandSet, CommandId);
                 var menuItem = new OleMenuCommand(MenuItemCallback, menuCommandID);
-                menuItem.BeforeQueryStatus += ToggleFileNameDisplay_BeforeQueryStatus;
+                menuItem.BeforeQueryStatus += TogglePresence_BeforeQueryStatus;
                 commandService.AddCommand(menuItem);
             }
         }
@@ -51,8 +52,7 @@ namespace discord_rpc_vs
         /// <summary>
         /// Gets the instance of the command.
         /// </summary>
-        public static ToggleFileNameDisplay Instance
-        {
+        public static TogglePresence Instance {
             get;
             private set;
         }
@@ -60,10 +60,8 @@ namespace discord_rpc_vs
         /// <summary>
         /// Gets the service provider from the owner package.
         /// </summary>
-        private IServiceProvider ServiceProvider
-        {
-            get
-            {
+        private IServiceProvider ServiceProvider {
+            get {
                 return this.package;
             }
         }
@@ -74,7 +72,7 @@ namespace discord_rpc_vs
         /// <param name="package">Owner package, not null.</param>
         public static void Initialize(Package package)
         {
-            Instance = new ToggleFileNameDisplay(package);
+            Instance = new TogglePresence(package);
         }
 
         /// <summary>
@@ -87,17 +85,45 @@ namespace discord_rpc_vs
         private void MenuItemCallback(object sender, EventArgs e)
         {
             // Turn the config variable off/on
-            DiscordRPCVSPackage.Config.DisplayFileName = !DiscordRPCVSPackage.Config.DisplayFileName;
+            DiscordRPCVSPackage.Config.PresenceEnabled = !DiscordRPCVSPackage.Config.PresenceEnabled;
             DiscordRPCVSPackage.Config.Save();
+
+            CheckIfShouldDisable();
         }
 
-        private void ToggleFileNameDisplay_BeforeQueryStatus(object sender, EventArgs e)
+        private void TogglePresence_BeforeQueryStatus(object sender, EventArgs e)
         {
             if (sender is OleMenuCommand menuCommand)
             {
-                menuCommand.Checked = DiscordRPCVSPackage.Config.DisplayFileName;
-                menuCommand.Visible = true;
+                menuCommand.Checked = DiscordRPCVSPackage.Config.PresenceEnabled;
+                CheckIfShouldDisable();
+
+                if (DiscordRPCVSPackage.Config.PresenceEnabled)
+                {
+                    EnableRPC();
+                }
             }
+        }
+
+        /// <summary>
+        /// Checks if presebce should be disabled or not
+        /// </summary>
+        private void CheckIfShouldDisable()
+        {
+            if (!DiscordRPCVSPackage.Config.PresenceEnabled)
+            {
+                DiscordRPC.Shutdown();
+            }
+        }
+
+        /// <summary>
+        /// Enables Presence
+        /// </summary>
+        private void EnableRPC()
+        {
+            new DiscordController().Initialize();
+
+            DiscordRPC.UpdatePresence(ref presence);
         }
     }
 }
