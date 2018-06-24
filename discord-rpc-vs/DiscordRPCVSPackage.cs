@@ -150,10 +150,10 @@ namespace discord_rpc_vs
             // Update the RichPresence
             DiscordController.presence = new DiscordRPC.RichPresence()
             {   
-                largeImageKey = "visualstudio",
-                largeImageText = "Visual Studio",
-                smallImageKey =  (Languages.ContainsKey(ext)) ? Languages[ext] : "smallvs",
-                smallImageText = (Languages.ContainsKey(ext)) ? Languages[ext] : "",
+                largeImageKey = (Languages.ContainsKey(ext)) ? Languages[ext] : "smallvs",
+                largeImageText = (Languages.ContainsKey(ext)) ? Languages[ext] : "",
+                smallImageKey = "visualstudio",
+                smallImageText = "Visual Studio",
             };
 
             // Add things to the presence based on config.
