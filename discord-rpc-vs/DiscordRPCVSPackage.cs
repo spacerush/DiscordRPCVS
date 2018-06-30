@@ -128,6 +128,7 @@ namespace discord_rpc_vs
             }
 
             base.Initialize();
+            ToggleImagePosition.Initialize(this);
             TogglePresence.Initialize(this);
             ToggleFileNameDisplay.Initialize(this);
             ToggleProjectNameDisplay.Initialize(this);
@@ -147,14 +148,27 @@ namespace discord_rpc_vs
             // Get Extension
             var ext = Path.GetExtension(windowActivated.Document.FullName);
 
-            // Update the RichPresence
-            DiscordController.presence = new DiscordRPC.RichPresence()
-            {   
-                largeImageKey = (Languages.ContainsKey(ext)) ? Languages[ext] : "smallvs",
-                largeImageText = (Languages.ContainsKey(ext)) ? Languages[ext] : "",
-                smallImageKey = "visualstudio",
-                smallImageText = "Visual Studio",
-            };
+            // Update the RichPresence Images based on config.
+            if (Config.DisplayFileTypeImage)
+            {
+                DiscordController.presence = new DiscordRPC.RichPresence()
+                {
+                    largeImageKey = (Languages.ContainsKey(ext)) ? Languages[ext] : "smallvs",
+                    largeImageText = (Languages.ContainsKey(ext)) ? Languages[ext] : "",
+                    smallImageKey = "visualstudio",
+                    smallImageText = "Visual Studio",
+                };
+            }
+            else if (!Config.DisplayFileTypeImage)
+            {
+                DiscordController.presence = new DiscordRPC.RichPresence()
+                {
+                    largeImageKey = "visualstudio",
+                    largeImageText = "Visual Studio",
+                    smallImageKey = (Languages.ContainsKey(ext)) ? Languages[ext] : "smallvs",
+                    smallImageText = (Languages.ContainsKey(ext)) ? Languages[ext] : "",
+                };
+            }
 
             // Add things to the presence based on config.
             if (Config.DisplayFileName)

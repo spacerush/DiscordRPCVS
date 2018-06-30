@@ -76,6 +76,13 @@
           <ButtonText>Reset time when changing file</ButtonText>
         </Strings>
       </Button>
+      <Button guid="guidDiscordRPCVSPackageCmdSet" id="cmdidToggleImagePosition" priority="0x0100" type="Button">
+        <Parent guid="guidDiscordRPCVSPackageCmdSet" id="MyMenuGroup" />
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <Strings>
+          <ButtonText>Display file type as large image</ButtonText>
+        </Strings>
+      </Button>
     </Buttons>
   </Commands>
 
@@ -92,6 +99,7 @@
       <IDSymbol value="4130" name="cmdidToggleProjectNameDisplay" />
       <IDSymbol value="4131" name="cmdidToggleTimestampDisplay" />
       <IDSymbol value="4132" name="cmdidToggleTimestampReset" />
+      <IDSymbol value="4134" name="cmdidToggleImagePosition" />
     </GuidSymbol>
   </Symbols>
 </CommandTable>
