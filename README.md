@@ -6,8 +6,6 @@
   <img src="https://eggplants.org/7x26ja.png" width="242px" height="269px">
 </p>
 
-
-https://eggplants.org/7x26ja.png
 # Features
 * Displays what file you're editing in Visual Studio.
 * Support for popular languages such as C#, C++, JavaScript, Python, Go, PHP, & More.
