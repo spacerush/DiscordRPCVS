@@ -1,22 +1,18 @@
 ﻿using Microsoft.VisualStudio.Shell;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.Design;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace discord_rpc_vs
 {
     /// <summary>
     /// Command handler
     /// </summary>
-    internal sealed class TogglePresence
+    internal sealed class ToggleImagePosition
     {
         /// <summary>
         /// Command ID.
         /// </summary>
-        public const int CommandId = 4134;
+        public const int CommandId = 4133;
 
         /// <summary
         /// Command menu group (command set GUID).
@@ -28,15 +24,12 @@ namespace discord_rpc_vs
         /// </summary>
         private readonly Package package;
 
-        private DiscordRPC.RichPresence presence;
-        public void SetPresence(DiscordRPC.RichPresence richPresence) { presence = richPresence; }
-
         /// <summary>
-        /// Initializes a new instance of the <see cref="TogglePresence"/> class.
+        /// Initializes a new instance of the <see cref="ToggleImagePosition"/> class.
         /// Adds our command handlers for menu (commands must exist in the command table file)
         /// </summary>
         /// <param name="package">Owner package, not null.</param>
-        private TogglePresence(Package package)
+        private ToggleImagePosition(Package package)
         {
             this.package = package ?? throw new ArgumentNullException(nameof(package));
 
@@ -44,15 +37,15 @@ namespace discord_rpc_vs
             {
                 var menuCommandID = new CommandID(CommandSet, CommandId);
                 var menuItem = new OleMenuCommand(MenuItemCallback, menuCommandID);
-                menuItem.BeforeQueryStatus += TogglePresence_BeforeQueryStatus;
+                menuItem.BeforeQueryStatus += ToggleImagePosition_BeforeQueryStatus;
                 commandService.AddCommand(menuItem);
             }
         }
-
         /// <summary>
         /// Gets the instance of the command.
         /// </summary>
-        public static TogglePresence Instance {
+        public static ToggleImagePosition Instance
+        {
             get;
             private set;
         }
@@ -60,8 +53,10 @@ namespace discord_rpc_vs
         /// <summary>
         /// Gets the service provider from the owner package.
         /// </summary>
-        private IServiceProvider ServiceProvider {
-            get {
+        private IServiceProvider ServiceProvider
+        {
+            get
+            {
                 return this.package;
             }
         }
@@ -72,7 +67,7 @@ namespace discord_rpc_vs
         /// <param name="package">Owner package, not null.</param>
         public static void Initialize(Package package)
         {
-            Instance = new TogglePresence(package);
+            Instance = new ToggleImagePosition(package);
         }
 
         /// <summary>
@@ -85,45 +80,17 @@ namespace discord_rpc_vs
         private void MenuItemCallback(object sender, EventArgs e)
         {
             // Turn the config variable off/on
-            DiscordRPCVSPackage.Config.PresenceEnabled = !DiscordRPCVSPackage.Config.PresenceEnabled;
+            DiscordRPCVSPackage.Config.DisplayFileTypeAsLargeImage = !DiscordRPCVSPackage.Config.DisplayFileTypeAsLargeImage;
             DiscordRPCVSPackage.Config.Save();
-
-            CheckIfShouldDisable();
         }
 
-        private void TogglePresence_BeforeQueryStatus(object sender, EventArgs e)
+        private void ToggleImagePosition_BeforeQueryStatus(object sender, EventArgs e)
         {
             if (sender is OleMenuCommand menuCommand)
             {
-                menuCommand.Checked = DiscordRPCVSPackage.Config.PresenceEnabled;
-                CheckIfShouldDisable();
-
-                if (DiscordRPCVSPackage.Config.PresenceEnabled)
-                {
-                    EnableRPC();
-                }
+                menuCommand.Checked = DiscordRPCVSPackage.Config.DisplayFileTypeAsLargeImage;
+                menuCommand.Visible = true;
             }
-        }
-
-        /// <summary>
-        /// Checks if presebce should be disabled or not
-        /// </summary>
-        private void CheckIfShouldDisable()
-        {
-            if (!DiscordRPCVSPackage.Config.PresenceEnabled)
-            {
-                DiscordRPC.Shutdown();
-            }
-        }
-
-        /// <summary>
-        /// Enables Presence
-        /// </summary>
-        private void EnableRPC()
-        {
-            new DiscordController().Initialize();
-
-            DiscordRPC.UpdatePresence(ref presence);
         }
     }
 }

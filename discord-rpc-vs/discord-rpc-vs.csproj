@@ -51,6 +51,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="ToggleImagePosition.cs" />
     <Compile Include="Config\Configuration.cs" />
     <Compile Include="DiscordController.cs" />
     <Compile Include="DiscordRPC.cs" />
