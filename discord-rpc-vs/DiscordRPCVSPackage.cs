@@ -149,7 +149,7 @@ namespace discord_rpc_vs
             var ext = Path.GetExtension(windowActivated.Document.FullName);
 
             // Update the RichPresence Images based on config.
-            if (Config.DisplayFileTypeImage)
+            if (Config.DisplayFileTypeAsLargeImage)
             {
                 DiscordController.presence = new DiscordRPC.RichPresence()
                 {
@@ -159,7 +159,7 @@ namespace discord_rpc_vs
                     smallImageText = "Visual Studio",
                 };
             }
-            else if (!Config.DisplayFileTypeImage)
+            else if (!Config.DisplayFileTypeAsLargeImage)
             {
                 DiscordController.presence = new DiscordRPC.RichPresence()
                 {

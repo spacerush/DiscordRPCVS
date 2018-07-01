@@ -38,7 +38,7 @@ namespace discord_rpc_vs.Config
         /// <summary>
         ///     Dictates whether or not to use the file type large image.
         /// </summary>
-        public bool DisplayFileTypeImage { get; set; } = true;
+        public bool DisplayFileTypeAsLargeImage { get; set; } = true;
         /// <summary>
         ///     Deserializes the config into a Config object
         /// </summary>
@@ -56,7 +56,7 @@ namespace discord_rpc_vs.Config
                 config.DisplayFileName = true;
                 config.DisplayProject = true;
                 config.ResetTimestamp = true;
-                config.DisplayFileTypeImage = true;
+                config.DisplayFileTypeAsLargeImage = true;
                 config.Save();
                 return config;
             }

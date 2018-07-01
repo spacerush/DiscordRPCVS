@@ -16,7 +16,7 @@ namespace discord_rpc_vs
         /// <summary>
         /// Command ID.
         /// </summary>
-        public const int CommandId = 4133;
+        public const int CommandId = 4134;
 
         /// <summary
         /// Command menu group (command set GUID).

@@ -94,12 +94,12 @@
     <GuidSymbol name="guidDiscordRPCVSPackageCmdSet" value="{8b0ef413-de58-42e0-aa72-1dffd0b4c664}">
       <IDSymbol name="MyMenuGroup" value="0x1020" />
       <IDSymbol name="DiscordRPCVSId" value="0x0100" />
-      <IDSymbol value="4133" name="cmdidTogglePresence" />
+      <IDSymbol value="4134" name="cmdidTogglePresence" />
       <IDSymbol value="4129" name="cmdidToggleFileNameDisplay" /> 
       <IDSymbol value="4130" name="cmdidToggleProjectNameDisplay" />
       <IDSymbol value="4131" name="cmdidToggleTimestampDisplay" />
       <IDSymbol value="4132" name="cmdidToggleTimestampReset" />
-      <IDSymbol value="4134" name="cmdidToggleImagePosition" />
+      <IDSymbol value="4133" name="cmdidToggleImagePosition" />
     </GuidSymbol>
   </Symbols>
 </CommandTable>

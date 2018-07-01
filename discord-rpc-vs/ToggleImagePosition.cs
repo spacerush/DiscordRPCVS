@@ -12,7 +12,7 @@ namespace discord_rpc_vs
         /// <summary>
         /// Command ID.
         /// </summary>
-        public const int CommandId = 4134;
+        public const int CommandId = 4133;
 
         /// <summary
         /// Command menu group (command set GUID).
@@ -80,7 +80,7 @@ namespace discord_rpc_vs
         private void MenuItemCallback(object sender, EventArgs e)
         {
             // Turn the config variable off/on
-            DiscordRPCVSPackage.Config.DisplayFileTypeImage = !DiscordRPCVSPackage.Config.DisplayFileTypeImage;
+            DiscordRPCVSPackage.Config.DisplayFileTypeAsLargeImage = !DiscordRPCVSPackage.Config.DisplayFileTypeAsLargeImage;
             DiscordRPCVSPackage.Config.Save();
         }
 
@@ -88,7 +88,7 @@ namespace discord_rpc_vs
         {
             if (sender is OleMenuCommand menuCommand)
             {
-                menuCommand.Checked = DiscordRPCVSPackage.Config.DisplayFileTypeImage;
+                menuCommand.Checked = DiscordRPCVSPackage.Config.DisplayFileTypeAsLargeImage;
                 menuCommand.Visible = true;
             }
         }
