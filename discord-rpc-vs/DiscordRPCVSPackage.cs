@@ -146,7 +146,12 @@ namespace discord_rpc_vs
         private void OnWindowSwitch(Window windowActivated, Window lastWindow)
         {
             // Get Extension
-            var ext = Path.GetExtension(windowActivated.Document.FullName);
+            var ext = "";
+
+            if (windowActivated.Document != null)
+            {
+                ext = Path.GetExtension(windowActivated.Document.FullName);
+            }
 
             // Update the RichPresence Images based on config.
             if (Config.DisplayFileTypeAsLargeImage)
@@ -171,10 +176,10 @@ namespace discord_rpc_vs
             }
 
             // Add things to the presence based on config.
-            if (Config.DisplayFileName)
+            if (Config.DisplayFileName && windowActivated.Document != null)
                 DiscordController.presence.details = Path.GetFileName(GetExactPathName(windowActivated.Document.FullName));
 
-            if (Config.DisplayProject)
+            if (Config.DisplayProject && _dte.Solution != null)
                 DiscordController.presence.state = "Developing " + Path.GetFileNameWithoutExtension(_dte.Solution.FileName);
 
             // Initialize timestamp
