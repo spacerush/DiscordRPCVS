@@ -11,6 +11,8 @@
 * Shows how long you've been editing a particular file.
 * The ability to toggle the displaying of file names, solutions, and timestamps in your Rich Presence.
 * The ability to toggle whether or not your timestamp resets on Discord when switching files.
+* The ability to toggle whether to use large or small images for your file type.
+* The ability to turn Rich Presence completely off or on.
 
 # Toggling Display
 A neat feature with this extension compared to others is you can completely customize your Rich Presence and display only what you want.
