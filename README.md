@@ -16,7 +16,7 @@
 A neat feature with this extension compared to others is you can completely customize your Rich Presence and display only what you want.
 
 **Example**
-<p> <img src="https://eggplants.org/0ns7z1.png"></p>
+<p> <img src="https://eggplants.org/pm43t7.png"></p>
 
 # Contributing
 As I'm sure more more languages and file types are wanted to be supported, you can feel free to contribute. Feel free to fork the repository and open a pull request, and the extension shall be updated with the added changes.
