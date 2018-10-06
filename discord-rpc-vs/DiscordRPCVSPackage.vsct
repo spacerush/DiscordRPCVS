@@ -1,83 +1,57 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <CommandTable xmlns="http://schemas.microsoft.com/VisualStudio/2005-10-18/CommandTable" xmlns:xs="http://www.w3.org/2001/XMLSchema">
-
-  <!--  This is the file that defines the actual layout and type of the commands.
-        It is divided in different sections (e.g. command definition, command
-        placement, ...), with each defining a specific set of properties.
-        See the comment before each section for more details about how to
-        use it. -->
-
-  <!--  The VSCT compiler (the tool that translates this file into the binary
-        format that VisualStudio will consume) has the ability to run a preprocessor
-        on the vsct file; this preprocessor is (usually) the C++ preprocessor, so
-        it is possible to define includes and macros with the same syntax used
-        in C++ files. Using this ability of the compiler here, we include some files
-        defining some of the constants that we will use inside the file. -->
-
-  <!--This is the file that defines the IDs for all the commands exposed by VisualStudio. -->
-  <Extern href="stdidcmd.h" />
-
-  <!--This header contains the command ids for the menus provided by the shell. -->
   <Extern href="vsshlids.h" />
 
-  <!--The Commands section is where commands, menus, and menu groups are defined.
-      This section uses a Guid to identify the package that provides the command defined inside it. -->
   <Commands package="guidDiscordRPCVSPackage">
-    <!-- Inside this section we have different sub-sections: one for the menus, another
-    for the menu groups, one for the buttons (the actual commands), one for the combos
-    and the last one for the bitmaps used. Each element is identified by a command id that
-    is a unique pair of guid and numeric identifier; the guid part of the identifier is usually
-    called "command set" and is used to group different command inside a logically related
-    group; your package should define its own command set in order to avoid collisions
-    with command ids defined by other packages. -->
-    <!-- In this section you can define new menu groups. A menu group is a container for
-         other menus or buttons (commands); from a visual point of view you can see the
-         group as the part of a menu contained between two lines. The parent of a group
-         must be a menu. -->  
+    <Menus>
+      <Menu guid="guidDiscordRPCVSPackageCmdSet" id="SubMenu" priority="0x0100" type="Menu">
+        <Parent guid="guidSHLMainMenu" id="IDG_VS_TOOLS_CMDLINE"/>
+        <Strings>
+          <ButtonText>Discord Rich Presence</ButtonText>
+        </Strings>
+      </Menu>
+    </Menus>
+
     <Groups>
-      <Group guid="guidDiscordRPCVSPackageCmdSet" id="MyMenuGroup" priority="0x0600">
-        <Parent guid="guidSHLMainMenu" id="IDM_VS_MENU_TOOLS" />
+      <Group guid="guidDiscordRPCVSPackageCmdSet" id="SubMenuGroup" priority="0x0000">
+        <Parent guid="guidDiscordRPCVSPackageCmdSet" id="SubMenu" />
       </Group>
     </Groups>
 
-    <!--Buttons section. -->
-    <!--This section defines the elements the user can interact with, like a menu command or a button
-        or combo box in a toolbar. -->
-    
     <Buttons>
-      <Button guid="guidDiscordRPCVSPackageCmdSet" id="cmdidTogglePresence" priority="0x0100" type="Button">
-        <Parent guid="guidDiscordRPCVSPackageCmdSet" id="MyMenuGroup" />
+      <Button guid="guidDiscordRPCVSPackageCmdSet" id="cmdidTogglePresence" priority="0x0000">
+        <Parent guid="guidDiscordRPCVSPackageCmdSet" id="SubMenuGroup" />
         <Strings>
           <ButtonText>Enable Discord Presence</ButtonText>
         </Strings>
       </Button>
-      <Button guid="guidDiscordRPCVSPackageCmdSet" id="cmdidToggleFileNameDisplay" priority="0x0100" type="Button">
-        <Parent guid="guidDiscordRPCVSPackageCmdSet" id="MyMenuGroup" />
+      <Button guid="guidDiscordRPCVSPackageCmdSet" id="cmdidToggleFileNameDisplay" priority="0x0001">
+        <Parent guid="guidDiscordRPCVSPackageCmdSet" id="SubMenuGroup" />
         <Strings>
           <ButtonText>Show file name in Rich Presence</ButtonText>
         </Strings>
       </Button>
-      <Button guid="guidDiscordRPCVSPackageCmdSet" id="cmdidToggleProjectNameDisplay" priority="0x0100" type="Button">
-        <Parent guid="guidDiscordRPCVSPackageCmdSet" id="MyMenuGroup" />
+      <Button guid="guidDiscordRPCVSPackageCmdSet" id="cmdidToggleProjectNameDisplay" priority="0x0002">
+        <Parent guid="guidDiscordRPCVSPackageCmdSet" id="SubMenuGroup" />
         <Strings>
           <ButtonText>Show solution in Rich Presence</ButtonText>
         </Strings>
       </Button>
-      <Button guid="guidDiscordRPCVSPackageCmdSet" id="cmdidToggleTimestampDisplay" priority="0x0100" type="Button">
-        <Parent guid="guidDiscordRPCVSPackageCmdSet" id="MyMenuGroup" />
+      <Button guid="guidDiscordRPCVSPackageCmdSet" id="cmdidToggleTimestampDisplay" priority="0x0003">
+        <Parent guid="guidDiscordRPCVSPackageCmdSet" id="SubMenuGroup" />
         <Strings>
           <ButtonText>Show time in Rich Presence</ButtonText>
         </Strings>
       </Button>
-      <Button guid="guidDiscordRPCVSPackageCmdSet" id="cmdidToggleTimestampReset" priority="0x0100" type="Button">
-        <Parent guid="guidDiscordRPCVSPackageCmdSet" id="MyMenuGroup" />
+      <Button guid="guidDiscordRPCVSPackageCmdSet" id="cmdidToggleTimestampReset" priority="0x0004">
+        <Parent guid="guidDiscordRPCVSPackageCmdSet" id="SubMenuGroup" />
         <CommandFlag>DynamicVisibility</CommandFlag>
         <Strings>
           <ButtonText>Reset time when changing file</ButtonText>
         </Strings>
       </Button>
-      <Button guid="guidDiscordRPCVSPackageCmdSet" id="cmdidToggleImagePosition" priority="0x0100" type="Button">
-        <Parent guid="guidDiscordRPCVSPackageCmdSet" id="MyMenuGroup" />
+      <Button guid="guidDiscordRPCVSPackageCmdSet" id="cmdidToggleImagePosition" priority="0x0005">
+        <Parent guid="guidDiscordRPCVSPackageCmdSet" id="SubMenuGroup" />
         <CommandFlag>DynamicVisibility</CommandFlag>
         <Strings>
           <ButtonText>Display file type as large image</ButtonText>
@@ -87,19 +61,16 @@
   </Commands>
 
   <Symbols>
-    <!-- This is the package guid. -->
     <GuidSymbol name="guidDiscordRPCVSPackage" value="{ea99cd90-97ea-40a5-be3c-2f3377242800}" />
-
-    <!-- This is the guid used to group the menu commands together -->
     <GuidSymbol name="guidDiscordRPCVSPackageCmdSet" value="{8b0ef413-de58-42e0-aa72-1dffd0b4c664}">
-      <IDSymbol name="MyMenuGroup" value="0x1020" />
-      <IDSymbol name="DiscordRPCVSId" value="0x0100" />
-      <IDSymbol value="4134" name="cmdidTogglePresence" />
-      <IDSymbol value="4129" name="cmdidToggleFileNameDisplay" /> 
-      <IDSymbol value="4130" name="cmdidToggleProjectNameDisplay" />
-      <IDSymbol value="4131" name="cmdidToggleTimestampDisplay" />
-      <IDSymbol value="4132" name="cmdidToggleTimestampReset" />
-      <IDSymbol value="4133" name="cmdidToggleImagePosition" />
+      <IDSymbol value="0x0100" name="SubMenu" />
+      <IDSymbol value="0x0101" name="SubMenuGroup" />
+      <IDSymbol value="0x1021" name="cmdidToggleFileNameDisplay" />
+      <IDSymbol value="0x1022" name="cmdidToggleProjectNameDisplay" />
+      <IDSymbol value="0x1023" name="cmdidToggleTimestampDisplay" />
+      <IDSymbol value="0x1024" name="cmdidToggleTimestampReset" />
+      <IDSymbol value="0x1025" name="cmdidToggleImagePosition" />
+      <IDSymbol value="0x1026" name="cmdidTogglePresence" />
     </GuidSymbol>
   </Symbols>
 </CommandTable>
