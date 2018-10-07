@@ -4,8 +4,8 @@
 
   <Commands package="guidDiscordRPCVSPackage">
     <Menus>
-      <Menu guid="guidDiscordRPCVSPackageCmdSet" id="SubMenu" priority="0x0100" type="Menu">
-        <Parent guid="guidSHLMainMenu" id="IDG_VS_TOOLS_CMDLINE"/>
+      <Menu guid="guidDiscordRPCVSPackageCmdSet" id="SubMenu" priority="0x0100">
+        <Parent guid="guidSHLMainMenu" id="IDG_VS_TOOLS_EXT_CUST" />
         <Strings>
           <ButtonText>Discord Rich Presence</ButtonText>
         </Strings>
@@ -74,4 +74,3 @@
     </GuidSymbol>
   </Symbols>
 </CommandTable>
-
