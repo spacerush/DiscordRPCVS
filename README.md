@@ -2,8 +2,7 @@
 >Enables Discord [Rich Presence](https://discordapp.com/rich-presence) For Visual Studio 2017. As you're developing, this extension will automatically update your status on Discord to tell the world what you're coding. You can install the latest release [here](https://marketplace.visualstudio.com/items?itemName=swanzana.discord-rpc-vs)
 
 <p align="center"> 
-  <img src="https://eggplants.org/fei05d.png" width="242px" height="269px">
-  <img src="https://eggplants.org/7x26ja.png" width="242px" height="269px">
+  <img src="https://i.imgur.com/A7SgcFW.png" width="242px" height="269px">
 </p>
 
 # Features
@@ -19,7 +18,7 @@
 A neat feature with this extension compared to others is you can completely customize your Rich Presence and display only what you want.
 
 **Example**
-<p> <img src="https://eggplants.org/pm43t7.png"></p>
+<p> <img src="https://i.imgur.com/gtCuzw9.png"></p>
 
 # Contributing
 As I'm sure more more languages and file types are wanted to be supported, you can feel free to contribute. Feel free to fork the repository and open a pull request, and the extension shall be updated with the added changes.
