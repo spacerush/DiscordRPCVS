@@ -22,39 +22,39 @@
       <Button guid="guidDiscordRPCVSPackageCmdSet" id="cmdidTogglePresence" priority="0x0000">
         <Parent guid="guidDiscordRPCVSPackageCmdSet" id="SubMenuGroup" />
         <Strings>
-          <ButtonText>Enable Discord Presence</ButtonText>
+          <ButtonText>Enable</ButtonText>
         </Strings>
       </Button>
       <Button guid="guidDiscordRPCVSPackageCmdSet" id="cmdidToggleFileNameDisplay" priority="0x0001">
         <Parent guid="guidDiscordRPCVSPackageCmdSet" id="SubMenuGroup" />
         <Strings>
-          <ButtonText>Show file name in Rich Presence</ButtonText>
+          <ButtonText>Show file name</ButtonText>
         </Strings>
       </Button>
       <Button guid="guidDiscordRPCVSPackageCmdSet" id="cmdidToggleProjectNameDisplay" priority="0x0002">
         <Parent guid="guidDiscordRPCVSPackageCmdSet" id="SubMenuGroup" />
         <Strings>
-          <ButtonText>Show solution in Rich Presence</ButtonText>
+          <ButtonText>Show solution name</ButtonText>
         </Strings>
       </Button>
       <Button guid="guidDiscordRPCVSPackageCmdSet" id="cmdidToggleTimestampDisplay" priority="0x0003">
         <Parent guid="guidDiscordRPCVSPackageCmdSet" id="SubMenuGroup" />
         <Strings>
-          <ButtonText>Show time in Rich Presence</ButtonText>
+          <ButtonText>Show time spent</ButtonText>
         </Strings>
       </Button>
       <Button guid="guidDiscordRPCVSPackageCmdSet" id="cmdidToggleTimestampReset" priority="0x0004">
         <Parent guid="guidDiscordRPCVSPackageCmdSet" id="SubMenuGroup" />
         <CommandFlag>DynamicVisibility</CommandFlag>
         <Strings>
-          <ButtonText>Reset time when changing file</ButtonText>
+          <ButtonText>Reset time on file change</ButtonText>
         </Strings>
       </Button>
       <Button guid="guidDiscordRPCVSPackageCmdSet" id="cmdidToggleImagePosition" priority="0x0005">
         <Parent guid="guidDiscordRPCVSPackageCmdSet" id="SubMenuGroup" />
         <CommandFlag>DynamicVisibility</CommandFlag>
         <Strings>
-          <ButtonText>Display file type as large image</ButtonText>
+          <ButtonText>Display language as large image</ButtonText>
         </Strings>
       </Button>
     </Buttons>
