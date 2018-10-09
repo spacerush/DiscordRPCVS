@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
     <Metadata>
-        <Identity Id="discord_rpc_vs.Company.b011d8bc-b0bf-4cf1-9948-4bf45efb4d54" Version="1.8.0" Language="en-US" Publisher="Swan" />
+        <Identity Id="discord_rpc_vs.Company.b011d8bc-b0bf-4cf1-9948-4bf45efb4d54" Version="1.8.1" Language="en-US" Publisher="Swan" />
         <DisplayName>DiscordRPCVS</DisplayName>
         <Description xml:space="preserve">Enables Discord Rich Presence for Visual Studio 2017</Description>
     </Metadata>
