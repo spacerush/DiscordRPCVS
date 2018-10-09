@@ -18,7 +18,8 @@
 A neat feature with this extension compared to others is you can completely customize your Rich Presence and display only what you want.
 
 **Example**
-<p> <img src="https://i.imgur.com/gtCuzw9.png"></p>
+
+![menu screenshot](https://i.imgur.com/JUqQHgC.png)
 
 # Contributing
 As I'm sure more more languages and file types are wanted to be supported, you can feel free to contribute. Feel free to fork the repository and open a pull request, and the extension shall be updated with the added changes.
