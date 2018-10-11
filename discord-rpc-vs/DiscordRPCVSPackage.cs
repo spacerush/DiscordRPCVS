@@ -128,12 +128,7 @@ namespace discord_rpc_vs
             }
 
             base.Initialize();
-            ToggleImagePosition.Initialize(this);
-            TogglePresence.Initialize(this);
-            ToggleFileNameDisplay.Initialize(this);
-            ToggleProjectNameDisplay.Initialize(this);
-            ToggleTimestampDisplay.Initialize(this);
-            ToggleTimestampReset.Initialize(this);
+            PresenceCommand.Initialize(this);
         }
 
         /// <summary>
