@@ -14,12 +14,12 @@ namespace discord_rpc_vs
         /// </summary>
         public static readonly Guid CommandSet = Guid.Parse("8b0ef413-de58-42e0-aa72-1dffd0b4c664");
 
+        internal const int TogglePresenceId = 0x1020;
         internal const int DisplayFileNameId = 0x1021;
         internal const int DisplaySolutionNameId = 0x1022;
         internal const int DisplayTimestampId = 0x1023;
         internal const int ResetTimestampId = 0x1024;
         internal const int ToggleImagePositionId = 0x1025;
-        internal const int TogglePresenceId = 0x1026;
 
         /// <summary>
         /// VS Package that provides this command, not null.
@@ -109,12 +109,12 @@ namespace discord_rpc_vs
         {
             switch (commandId)
             {
+                case 0x1020: return Config.PresenceEnabled;
                 case 0x1021: return Config.DisplayFileName;
                 case 0x1022: return Config.DisplayProject;
                 case 0x1023: return Config.DisplayTimestamp;
                 case 0x1024: return Config.ResetTimestamp;
                 case 0x1025: return Config.DisplayFileTypeAsLargeImage;
-                case 0x1026: return Config.PresenceEnabled;
                 default: return false;
             }
         }
