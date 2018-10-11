@@ -28,9 +28,6 @@ namespace discord_rpc_vs
         /// </summary>
         private readonly Package package;
 
-        private DiscordRPC.RichPresence presence;
-        public void SetPresence(DiscordRPC.RichPresence richPresence) { presence = richPresence; }
-
         /// <summary>
         /// Initializes a new instance of the <see cref="TogglePresence"/> class.
         /// Adds our command handlers for menu (commands must exist in the command table file)
@@ -121,9 +118,8 @@ namespace discord_rpc_vs
         /// </summary>
         private void EnableRPC()
         {
-            new DiscordController().Initialize();
-
-            DiscordRPC.UpdatePresence(ref presence);
+            DiscordRPCVSPackage.DiscordController.Initialize();
+            DiscordRPC.UpdatePresence(ref DiscordRPCVSPackage.DiscordController.presence);
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿//------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 // <copyright file="DiscordRPCVSPackage.cs" company="Company">
 //     Copyright (c) Company.  All rights reserved.
 // </copyright>
@@ -50,7 +50,7 @@ namespace discord_rpc_vs
         /// <summary>
         ///     Discord Controller instance
         /// </summary>
-        private DiscordController DiscordController { get; set; } = new DiscordController();
+        internal static DiscordController DiscordController { get; private set; } = new DiscordController();
 
         /// <summary>
         ///     Keeps track of if we have already initialized the timestamp
@@ -134,8 +134,6 @@ namespace discord_rpc_vs
             ToggleProjectNameDisplay.Initialize(this);
             ToggleTimestampDisplay.Initialize(this);
             ToggleTimestampReset.Initialize(this);
-
-            TogglePresence.Instance.SetPresence(DiscordController.presence);
         }
 
         /// <summary>
