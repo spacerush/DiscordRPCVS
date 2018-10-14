@@ -51,17 +51,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="ToggleImagePosition.cs" />
     <Compile Include="Config\Configuration.cs" />
     <Compile Include="DiscordController.cs" />
     <Compile Include="DiscordRPC.cs" />
     <Compile Include="DiscordRPCVSPackage.cs" />
+    <Compile Include="PresenceCommand.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ToggleFileNameDisplay.cs" />
-    <Compile Include="TogglePresence.cs" />
-    <Compile Include="ToggleProjectNameDisplay.cs" />
-    <Compile Include="ToggleTimestampDisplay.cs" />
-    <Compile Include="ToggleTimestampReset.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
