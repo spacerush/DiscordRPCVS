@@ -3,10 +3,9 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Runtime.InteropServices;
-using discord_rpc_vs.Properties;
-using EnvDTE;
-using Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio.Shell.Interop;
+using System.Threading;
+using Configuration = discord_rpc_vs.Config.Configuration;
+using Task = System.Threading.Tasks.Task;
 
 namespace discord_rpc_vs
 {
@@ -27,14 +26,14 @@ namespace discord_rpc_vs
     /// To get loaded into VS, the package must be referred by &lt;Asset Type="Microsoft.VisualStudio.VsPackage" ...&gt; in .vsixmanifest file.
     /// </para>
     /// </remarks>
-    [PackageRegistration(UseManagedResourcesOnly = true)]
+    [PackageRegistration(AllowsBackgroundLoading = true, UseManagedResourcesOnly = true)]
     [InstalledProductRegistration("#110", "#112", "1.0", IconResourceID = 400)] // Info on this package for Help/About
     [ProvideMenuResource("Menus.ctmenu", 1)]
-    [ProvideAutoLoad(UIContextGuids80.NoSolution)]
-    [ProvideAutoLoad(UIContextGuids80.SolutionExists)]
-    [Guid(DiscordRPCVSPackage.PackageGuidString)]
+    [ProvideService(UIContextGuids80.NoSolution)]
+    [ProvideService(UIContextGuids80.SolutionExists)]
+    [Guid(PackageGuidString)]
     [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "pkgdef, VS and vsixmanifest are valid VS terms")]
-    public sealed class DiscordRPCVSPackage : Package
+    public sealed class DiscordRPCVSPackage : AsyncPackage
     {
         /// <summary>
         /// DiscordRPCVSPackage GUID string.
@@ -44,7 +43,7 @@ namespace discord_rpc_vs
         /// <summary>
         ///     Discord Controller instance
         /// </summary>
-        internal static DiscordController DiscordController { get; private set; } = new DiscordController();
+        internal static DiscordController DiscordController { get; } = new DiscordController();
 
         /// <summary>
         ///     Keeps track of if we have already initialized the timestamp
@@ -60,20 +59,21 @@ namespace discord_rpc_vs
         ///     DTE
         /// </summary>
         private DTE _dte;
+
         private Events _dteEvents;
 
         /// <summary>
         ///     Dictionary in which the key is the file extension, and the value is the 
         ///     image key for RPC
         /// </summary>
-        private Dictionary<string, string> Languages = new Dictionary<string, string>()
+        private readonly Dictionary<string, string> _languages = new Dictionary<string, string>()
         {
-            { ".cs", "c-sharp"},
+            { ".cs", "c-sharp" },
             { ".cpp", "cpp" },
-            { ".py" , "python"},
+            { ".py", "python" },
             { ".js", "javascript" },
             { ".html", "html" },
-            { ".css", "css"},
+            { ".css", "css" },
             { ".java", "java" },
             { ".go", "go" },
             { ".php", "php" },
@@ -100,26 +100,31 @@ namespace discord_rpc_vs
 
         #region Package Members
 
+        /// <inheritdoc />
         /// <summary>
         /// Initialization of the package; this method is called right after the package is sited, so this is the place
         /// where you can put all the initialization code that rely on services provided by VisualStudio.
         /// </summary>
-        protected override void Initialize()
+        protected override async Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)
         {
             // Try to deserialize the config file, it should throw an error if it doesn't exist. 
             // in that case, we'll want to create a new instance and save it.
-            _dte = (DTE)GetService(typeof(SDTE));
+            Config = Configuration.Deserialize();
+            // Switches to the UI thread in order to consume some services used in command initialization
+            await JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);
+
+            // Query service asynchronously from the UI thread
+            _dte = await GetServiceAsync(typeof(DTE)) as DTE;
+
             _dteEvents = _dte.Events;
             _dteEvents.WindowEvents.WindowActivated += OnWindowSwitch;
 
             if (Settings.IsPresenceEnabled)
             {
                 DiscordController.Initialize();
-
-                DiscordRPC.UpdatePresence(ref DiscordController.presence);
+                DiscordRPC.UpdatePresence(ref DiscordController.Presence);
             }
 
-            base.Initialize();
             PresenceCommand.Initialize(this);
         }
 
@@ -131,7 +136,7 @@ namespace discord_rpc_vs
         private void OnWindowSwitch(Window windowActivated, Window lastWindow)
         {
             // Get Extension
-            var ext = "";
+            string ext = "";
 
             if (windowActivated.Document != null)
             {
@@ -141,22 +146,22 @@ namespace discord_rpc_vs
             // Update the RichPresence Images based on config.
             if (Settings.IsLanguageImageLarge)
             {
-                DiscordController.presence = new DiscordRPC.RichPresence()
+                DiscordController.Presence = new DiscordRPC.RichPresence
                 {
-                    largeImageKey = (Languages.ContainsKey(ext)) ? Languages[ext] : "smallvs",
-                    largeImageText = (Languages.ContainsKey(ext)) ? Languages[ext] : "",
+                    largeImageKey = (_languages.ContainsKey(ext)) ? _languages[ext] : "smallvs",
+                    largeImageText = (_languages.ContainsKey(ext)) ? _languages[ext] : "",
                     smallImageKey = "visualstudio",
                     smallImageText = "Visual Studio",
                 };
             }
             else if (!Settings.IsLanguageImageLarge)
             {
-                DiscordController.presence = new DiscordRPC.RichPresence()
+                DiscordController.Presence = new DiscordRPC.RichPresence
                 {
                     largeImageKey = "visualstudio",
                     largeImageText = "Visual Studio",
-                    smallImageKey = (Languages.ContainsKey(ext)) ? Languages[ext] : "smallvs",
-                    smallImageText = (Languages.ContainsKey(ext)) ? Languages[ext] : "",
+                    smallImageKey = (_languages.ContainsKey(ext)) ? _languages[ext] : "smallvs",
+                    smallImageText = (_languages.ContainsKey(ext)) ? _languages[ext] : "",
                 };
             }
 
@@ -170,8 +175,8 @@ namespace discord_rpc_vs
             // Initialize timestamp
             if (Settings.IsTimestampShown && !InitializedTimestamp)
             {
-                DiscordController.presence.startTimestamp = (Int32)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
-                InitialTimestamp = DiscordController.presence.startTimestamp;
+                DiscordController.Presence.startTimestamp = (int)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
+                InitialTimestamp = DiscordController.Presence.startTimestamp;
                 InitializedTimestamp = true;
             }
 
@@ -194,7 +199,9 @@ namespace discord_rpc_vs
         public static string GetExactPathName(string pathName)
         {
             if (!(File.Exists(pathName) || Directory.Exists(pathName)))
+            {
                 return pathName;
+            }
 
             var di = new DirectoryInfo(pathName);
 
@@ -204,12 +211,11 @@ namespace discord_rpc_vs
                     GetExactPathName(di.Parent.FullName),
                     di.Parent.GetFileSystemInfos(di.Name)[0].Name);
             }
-            else
-            {
-                return di.Name.ToUpper();
-            }
+
+            return di.Name.ToUpper();
         }
 
+        /// <inheritdoc />
         /// <summary>
         /// Called to ask the package if the shell can be closed. By default this method returns canClose as true and S_OK.
         /// </summary>
@@ -220,6 +226,7 @@ namespace discord_rpc_vs
             DiscordRPC.Shutdown();
             return base.QueryClose(out canClose);
         }
+
         #endregion
     }
 }

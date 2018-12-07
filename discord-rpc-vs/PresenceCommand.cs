@@ -37,7 +37,9 @@ namespace discord_rpc_vs
             this.package = package ?? throw new ArgumentNullException(nameof(package));
 
             if (!(ServiceProvider.GetService(typeof(IMenuCommandService)) is OleMenuCommandService commandService))
+            {
                 return;
+            }
 
             OleMenuCommand addCommand(int id, EventHandler toggled)
             {
@@ -47,7 +49,9 @@ namespace discord_rpc_vs
                 menuCommand.BeforeQueryStatus += (s, e) =>
                 {
                     if (s is OleMenuCommand command)
+                    {
                         command.Checked = GetSettingValue(command.CommandID.ID);
+                    }
                 };
 
                 commandService.AddCommand(menuCommand);
@@ -64,9 +68,11 @@ namespace discord_rpc_vs
             {
                 if (Settings.IsPresenceEnabled)
                 {
-                    DiscordRPCVSPackage.DiscordController.Initialize();
-                    DiscordRPC.UpdatePresence(ref DiscordRPCVSPackage.DiscordController.presence);
+                    return;
                 }
+
+                DiscordRPCVSPackage.DiscordController.Initialize();
+                DiscordRPC.UpdatePresence(ref DiscordRPCVSPackage.DiscordController.Presence);
             };
 
             addCommand(DisplayFileNameId, (s, e) => Settings.IsFileNameShown ^= true);
@@ -93,7 +99,10 @@ namespace discord_rpc_vs
         /// Initializes the singleton instance of the command.
         /// </summary>
         /// <param name="package">Owner package, not null.</param>
-        public static void Initialize(Package package) => Instance = new PresenceCommand(package);
+        public static void Initialize(Package package)
+        {
+            Instance = new PresenceCommand(package);
+        }
 
         /// <summary>
         /// Disables the presence if needed.
@@ -102,6 +111,7 @@ namespace discord_rpc_vs
         {
             if (!Settings.IsPresenceEnabled)
                 DiscordRPC.Shutdown();
+            }
         }
 
         private static bool GetSettingValue(int commandId)
