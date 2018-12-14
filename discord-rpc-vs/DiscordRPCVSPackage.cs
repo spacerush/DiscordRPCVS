@@ -107,9 +107,6 @@ namespace discord_rpc_vs
         /// </summary>
         protected override async Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)
         {
-            // Try to deserialize the config file, it should throw an error if it doesn't exist. 
-            // in that case, we'll want to create a new instance and save it.
-            Config = Configuration.Deserialize();
             // Switches to the UI thread in order to consume some services used in command initialization
             await JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);
 
