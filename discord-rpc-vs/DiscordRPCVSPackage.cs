@@ -1,18 +1,12 @@
-//------------------------------------------------------------------------------
-// <copyright file="DiscordRPCVSPackage.cs" company="Company">
-//     Copyright (c) Company.  All rights reserved.
-// </copyright>
-//------------------------------------------------------------------------------
-
-using EnvDTE;
-using Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio.Shell.Interop;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Runtime.InteropServices;
-using Configuration = discord_rpc_vs.Config.Configuration;
+using discord_rpc_vs.Properties;
+using EnvDTE;
+using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
 
 namespace discord_rpc_vs
 {
@@ -91,7 +85,7 @@ namespace discord_rpc_vs
         /// <summary>
         ///     Global configuration 
         /// </summary>
-        internal static Configuration Config { get; set; }
+        internal static Settings Settings => Settings.Default;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DiscordRPCVS"/> class.
@@ -114,13 +108,11 @@ namespace discord_rpc_vs
         {
             // Try to deserialize the config file, it should throw an error if it doesn't exist. 
             // in that case, we'll want to create a new instance and save it.
-            Config = Configuration.Deserialize();
-
             _dte = (DTE)GetService(typeof(SDTE));
             _dteEvents = _dte.Events;
             _dteEvents.WindowEvents.WindowActivated += OnWindowSwitch;
 
-            if (Config.PresenceEnabled)
+            if (Settings.IsPresenceEnabled)
             {
                 DiscordController.Initialize();
 
@@ -147,7 +139,7 @@ namespace discord_rpc_vs
             }
 
             // Update the RichPresence Images based on config.
-            if (Config.DisplayFileTypeAsLargeImage)
+            if (Settings.IsLanguageImageLarge)
             {
                 DiscordController.presence = new DiscordRPC.RichPresence()
                 {
@@ -157,7 +149,7 @@ namespace discord_rpc_vs
                     smallImageText = "Visual Studio",
                 };
             }
-            else if (!Config.DisplayFileTypeAsLargeImage)
+            else if (!Settings.IsLanguageImageLarge)
             {
                 DiscordController.presence = new DiscordRPC.RichPresence()
                 {
@@ -169,14 +161,14 @@ namespace discord_rpc_vs
             }
 
             // Add things to the presence based on config.
-            if (Config.DisplayFileName && windowActivated.Document != null)
+            if (Settings.IsFileNameShown && windowActivated.Document != null)
                 DiscordController.presence.details = Path.GetFileName(GetExactPathName(windowActivated.Document.FullName));
 
-            if (Config.DisplayProject && _dte.Solution != null)
+            if (Settings.IsSolutionNameShown && _dte.Solution != null)
                 DiscordController.presence.state = "Developing " + Path.GetFileNameWithoutExtension(_dte.Solution.FileName);
 
             // Initialize timestamp
-            if (Config.DisplayTimestamp && !InitializedTimestamp)
+            if (Settings.IsTimestampShown && !InitializedTimestamp)
             {
                 DiscordController.presence.startTimestamp = (Int32)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
                 InitialTimestamp = DiscordController.presence.startTimestamp;
@@ -184,13 +176,13 @@ namespace discord_rpc_vs
             }
 
             // Reset it
-            if (Config.ResetTimestamp && InitializedTimestamp && Config.DisplayTimestamp)
+            if (Settings.IsTimestampResetEnabled && InitializedTimestamp && Settings.IsTimestampShown)
                 DiscordController.presence.startTimestamp = (Int32)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
             // Set it equal to the initial timestamp (To not reset)
-            else if (Config.DisplayTimestamp && !Config.ResetTimestamp)
+            else if (Settings.IsTimestampShown && !Settings.IsTimestampResetEnabled)
                 DiscordController.presence.startTimestamp = InitialTimestamp;
 
-            if (Config.PresenceEnabled)
+            if (Settings.IsPresenceEnabled)
                 DiscordRPC.UpdatePresence(ref DiscordController.presence);
         }
 
