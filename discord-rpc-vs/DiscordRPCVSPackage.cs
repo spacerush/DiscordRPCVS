@@ -123,6 +123,7 @@ namespace discord_rpc_vs
             }
 
             PresenceCommand.Initialize(this);
+            await base.InitializeAsync(cancellationToken, progress);
         }
 
         /// <summary>
@@ -132,6 +133,7 @@ namespace discord_rpc_vs
         /// <param name="lastWindow"></param>
         private void OnWindowSwitch(Window windowActivated, Window lastWindow)
         {
+
             // Get Extension
             string ext = "";
 
