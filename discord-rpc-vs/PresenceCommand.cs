@@ -1,6 +1,7 @@
-using Microsoft.VisualStudio.Shell;
 using System;
 using System.ComponentModel.Design;
+using Microsoft.VisualStudio.Shell;
+using static discord_rpc_vs.DiscordRPCVSPackage;
 
 namespace discord_rpc_vs
 {
@@ -40,7 +41,7 @@ namespace discord_rpc_vs
 
             OleMenuCommand addCommand(int id, EventHandler toggled)
             {
-                toggled += (s, e) => Config.Save();
+                toggled += (s, e) => Settings.Save();
                 var menuCommand = new OleMenuCommand(toggled, new CommandID(CommandSet, id));
 
                 menuCommand.BeforeQueryStatus += (s, e) =>
@@ -55,30 +56,28 @@ namespace discord_rpc_vs
 
             OleMenuCommand presenceCmd = addCommand(TogglePresenceId, (s, e) =>
             {
-                Config.PresenceEnabled ^= true;
+                Settings.IsPresenceEnabled ^= true;
                 DisableIfNeeded();
             });
 
             presenceCmd.BeforeQueryStatus += (s, e) =>
             {
-                if (Config.PresenceEnabled)
+                if (Settings.IsPresenceEnabled)
                 {
                     DiscordRPCVSPackage.DiscordController.Initialize();
                     DiscordRPC.UpdatePresence(ref DiscordRPCVSPackage.DiscordController.presence);
                 }
             };
 
-            addCommand(DisplayFileNameId, (s, e) => Config.DisplayFileName ^= true);
-            addCommand(DisplaySolutionNameId, (s, e) => Config.DisplayProject ^= true);
-            addCommand(DisplayTimestampId, (s, e) => Config.DisplayTimestamp ^= true);
+            addCommand(DisplayFileNameId, (s, e) => Settings.IsFileNameShown ^= true);
+            addCommand(DisplaySolutionNameId, (s, e) => Settings.IsSolutionNameShown ^= true);
+            addCommand(DisplayTimestampId, (s, e) => Settings.IsTimestampShown ^= true);
 
-            OleMenuCommand resetTimestampCmd = addCommand(ResetTimestampId, (s, e) => Config.ResetTimestamp ^= true);
-            resetTimestampCmd.BeforeQueryStatus += (s, e) => ((OleMenuCommand)s).Visible = Config.DisplayTimestamp;
+            OleMenuCommand resetTimestampCmd = addCommand(ResetTimestampId, (s, e) => Settings.IsTimestampResetEnabled ^= true);
+            resetTimestampCmd.BeforeQueryStatus += (s, e) => ((OleMenuCommand)s).Visible = Settings.IsTimestampShown;
 
-            addCommand(ToggleImagePositionId, (s, e) => Config.DisplayFileTypeAsLargeImage ^= true);
+            addCommand(ToggleImagePositionId, (s, e) => Settings.IsLanguageImageLarge ^= true);
         }
-
-        private static Config.Configuration Config => DiscordRPCVSPackage.Config;
 
         /// <summary>
         /// Gets the instance of the command.
@@ -101,7 +100,7 @@ namespace discord_rpc_vs
         /// </summary>
         private static void DisableIfNeeded()
         {
-            if (!Config.PresenceEnabled)
+            if (!Settings.IsPresenceEnabled)
                 DiscordRPC.Shutdown();
         }
 
@@ -109,12 +108,12 @@ namespace discord_rpc_vs
         {
             switch (commandId)
             {
-                case 0x1020: return Config.PresenceEnabled;
-                case 0x1021: return Config.DisplayFileName;
-                case 0x1022: return Config.DisplayProject;
-                case 0x1023: return Config.DisplayTimestamp;
-                case 0x1024: return Config.ResetTimestamp;
-                case 0x1025: return Config.DisplayFileTypeAsLargeImage;
+                case 0x1020: return Settings.IsPresenceEnabled;
+                case 0x1021: return Settings.IsFileNameShown;
+                case 0x1022: return Settings.IsSolutionNameShown;
+                case 0x1023: return Settings.IsTimestampShown;
+                case 0x1024: return Settings.IsTimestampResetEnabled;
+                case 0x1025: return Settings.IsLanguageImageLarge;
                 default: return false;
             }
         }
