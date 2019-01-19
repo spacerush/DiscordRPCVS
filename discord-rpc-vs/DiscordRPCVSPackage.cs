@@ -4,27 +4,31 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading;
-using Configuration = discord_rpc_vs.Config.Configuration;
+using discord_rpc_vs.Properties;
+using EnvDTE;
+using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
 using Task = System.Threading.Tasks.Task;
 
 namespace discord_rpc_vs
 {
     /// <summary>
-    /// This is the class that implements the package exposed by this assembly.
+    ///     This is the class that implements the package exposed by this assembly.
     /// </summary>
     /// <remarks>
-    /// <para>
-    /// The minimum requirement for a class to be considered a valid package for Visual Studio
-    /// is to implement the IVsPackage interface and register itself with the shell.
-    /// This package uses the helper classes defined inside the Managed Package Framework (MPF)
-    /// to do it: it derives from the Package class that provides the implementation of the
-    /// IVsPackage interface and uses the registration attributes defined in the framework to
-    /// register itself and its components with the shell. These attributes tell the pkgdef creation
-    /// utility what data to put into .pkgdef file.
-    /// </para>
-    /// <para>
-    /// To get loaded into VS, the package must be referred by &lt;Asset Type="Microsoft.VisualStudio.VsPackage" ...&gt; in .vsixmanifest file.
-    /// </para>
+    ///     <para>
+    ///         The minimum requirement for a class to be considered a valid package for Visual Studio
+    ///         is to implement the IVsPackage interface and register itself with the shell.
+    ///         This package uses the helper classes defined inside the Managed Package Framework (MPF)
+    ///         to do it: it derives from the Package class that provides the implementation of the
+    ///         IVsPackage interface and uses the registration attributes defined in the framework to
+    ///         register itself and its components with the shell. These attributes tell the pkgdef creation
+    ///         utility what data to put into .pkgdef file.
+    ///     </para>
+    ///     <para>
+    ///         To get loaded into VS, the package must be referred by &lt;Asset Type="Microsoft.VisualStudio.VsPackage" ...
+    ///         &gt; in .vsixmanifest file.
+    ///     </para>
     /// </remarks>
     [PackageRegistration(AllowsBackgroundLoading = true, UseManagedResourcesOnly = true)]
     [InstalledProductRegistration("#110", "#112", "1.0", IconResourceID = 400)] // Info on this package for Help/About
@@ -36,9 +40,36 @@ namespace discord_rpc_vs
     public sealed class DiscordRPCVSPackage : AsyncPackage
     {
         /// <summary>
-        /// DiscordRPCVSPackage GUID string.
+        ///     DiscordRPCVSPackage GUID string.
         /// </summary>
         public const string PackageGuidString = "ea99cd90-97ea-40a5-be3c-2f3377242800";
+
+        /// <summary>
+        ///     Dictionary in which the key is the file extension, and the value is the
+        ///     image key for RPC
+        /// </summary>
+        private readonly Dictionary<string, string> _languages = new Dictionary<string, string>
+        {
+            { ".cs", "c-sharp" },
+            { ".cpp", "cpp" },
+            { ".py", "python" },
+            { ".js", "javascript" },
+            { ".html", "html" },
+            { ".css", "css" },
+            { ".java", "java" },
+            { ".go", "go" },
+            { ".php", "php" },
+            { ".c", "clang" },
+            { ".h", "clang" },
+            { ".class", "java" }
+        };
+
+        /// <summary>
+        ///     DTE
+        /// </summary>
+        private DTE _dte;
+
+        private Events _dteEvents;
 
         /// <summary>
         ///     Discord Controller instance
@@ -56,54 +87,16 @@ namespace discord_rpc_vs
         private long InitialTimestamp { get; set; }
 
         /// <summary>
-        ///     DTE
-        /// </summary>
-        private DTE _dte;
-
-        private Events _dteEvents;
-
-        /// <summary>
-        ///     Dictionary in which the key is the file extension, and the value is the 
-        ///     image key for RPC
-        /// </summary>
-        private readonly Dictionary<string, string> _languages = new Dictionary<string, string>()
-        {
-            { ".cs", "c-sharp" },
-            { ".cpp", "cpp" },
-            { ".py", "python" },
-            { ".js", "javascript" },
-            { ".html", "html" },
-            { ".css", "css" },
-            { ".java", "java" },
-            { ".go", "go" },
-            { ".php", "php" },
-            { ".c", "clang" },
-            { ".h", "clang" },
-            { ".class", "java" },
-        };
-
-        /// <summary>
-        ///     Global configuration 
+        ///     Global configuration
         /// </summary>
         internal static Settings Settings => Settings.Default;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="DiscordRPCVS"/> class.
-        /// </summary>
-        public DiscordRPCVSPackage()
-        {
-            // Inside this method you can place any initialization code that does not require
-            // any Visual Studio service because at this point the package object is created but
-            // not sited yet inside Visual Studio environment. The place to do all the other
-            // initialization is the Initialize method.
-        }
 
         #region Package Members
 
         /// <inheritdoc />
         /// <summary>
-        /// Initialization of the package; this method is called right after the package is sited, so this is the place
-        /// where you can put all the initialization code that rely on services provided by VisualStudio.
+        ///     Initialization of the package; this method is called right after the package is sited, so this is the place
+        ///     where you can put all the initialization code that rely on services provided by VisualStudio.
         /// </summary>
         protected override async Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)
         {
@@ -111,7 +104,7 @@ namespace discord_rpc_vs
             await JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);
 
             // Query service asynchronously from the UI thread
-            _dte = await GetServiceAsync(typeof(DTE)) as DTE;
+            _dte = await GetServiceAsync(typeof(SDTE)) as DTE;
 
             _dteEvents = _dte.Events;
             _dteEvents.WindowEvents.WindowActivated += OnWindowSwitch;
@@ -133,7 +126,6 @@ namespace discord_rpc_vs
         /// <param name="lastWindow"></param>
         private void OnWindowSwitch(Window windowActivated, Window lastWindow)
         {
-
             // Get Extension
             string ext = "";
 
@@ -147,10 +139,10 @@ namespace discord_rpc_vs
             {
                 DiscordController.Presence = new DiscordRPC.RichPresence
                 {
-                    largeImageKey = (_languages.ContainsKey(ext)) ? _languages[ext] : "smallvs",
-                    largeImageText = (_languages.ContainsKey(ext)) ? _languages[ext] : "",
+                    largeImageKey = _languages.ContainsKey(ext) ? _languages[ext] : "smallvs",
+                    largeImageText = _languages.ContainsKey(ext) ? _languages[ext] : "",
                     smallImageKey = "visualstudio",
-                    smallImageText = "Visual Studio",
+                    smallImageText = "Visual Studio"
                 };
             }
             else if (!Settings.IsLanguageImageLarge)
@@ -159,35 +151,35 @@ namespace discord_rpc_vs
                 {
                     largeImageKey = "visualstudio",
                     largeImageText = "Visual Studio",
-                    smallImageKey = (_languages.ContainsKey(ext)) ? _languages[ext] : "smallvs",
-                    smallImageText = (_languages.ContainsKey(ext)) ? _languages[ext] : "",
+                    smallImageKey = _languages.ContainsKey(ext) ? _languages[ext] : "smallvs",
+                    smallImageText = _languages.ContainsKey(ext) ? _languages[ext] : ""
                 };
             }
 
             // Add things to the presence based on config.
             if (Settings.IsFileNameShown && windowActivated.Document != null)
-                DiscordController.presence.details = Path.GetFileName(GetExactPathName(windowActivated.Document.FullName));
+                DiscordController.Presence.details = Path.GetFileName(GetExactPathName(windowActivated.Document.FullName));
 
             if (Settings.IsSolutionNameShown && _dte.Solution != null)
-                DiscordController.presence.state = "Developing " + Path.GetFileNameWithoutExtension(_dte.Solution.FileName);
+                DiscordController.Presence.state = "Developing " + Path.GetFileNameWithoutExtension(_dte.Solution.FileName);
 
             // Initialize timestamp
             if (Settings.IsTimestampShown && !InitializedTimestamp)
             {
-                DiscordController.Presence.startTimestamp = (int)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
+                DiscordController.Presence.startTimestamp = (int)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
                 InitialTimestamp = DiscordController.Presence.startTimestamp;
                 InitializedTimestamp = true;
             }
 
             // Reset it
             if (Settings.IsTimestampResetEnabled && InitializedTimestamp && Settings.IsTimestampShown)
-                DiscordController.presence.startTimestamp = (Int32)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
+                DiscordController.Presence.startTimestamp = (int)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
             // Set it equal to the initial timestamp (To not reset)
             else if (Settings.IsTimestampShown && !Settings.IsTimestampResetEnabled)
-                DiscordController.presence.startTimestamp = InitialTimestamp;
+                DiscordController.Presence.startTimestamp = InitialTimestamp;
 
             if (Settings.IsPresenceEnabled)
-                DiscordRPC.UpdatePresence(ref DiscordController.presence);
+                DiscordRPC.UpdatePresence(ref DiscordController.Presence);
         }
 
         /// <summary>
@@ -216,7 +208,7 @@ namespace discord_rpc_vs
 
         /// <inheritdoc />
         /// <summary>
-        /// Called to ask the package if the shell can be closed. By default this method returns canClose as true and S_OK.
+        ///     Called to ask the package if the shell can be closed. By default this method returns canClose as true and S_OK.
         /// </summary>
         /// <param name="canClose">Returns true if the shell can be closed, otherwise false.</param>
         /// <returns>S_OK(0) if the method succeeded, otherwise an error code.</returns>

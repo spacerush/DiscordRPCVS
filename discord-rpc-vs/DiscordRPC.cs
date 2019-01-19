@@ -1,14 +1,35 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace discord_rpc_vs
 {
     public class DiscordRPC
     {
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate void DisconnectedCallback(int errorCode, string message);
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate void ErrorCallback(int errorCode, string message);
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate void JoinCallback(string secret);
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate void ReadyCallback();
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate void RequestCallback(JoinRequest request);
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate void SpectateCallback(string secret);
+
+        public enum Reply
+        {
+            No = 0,
+            Yes = 1,
+            Ignore = 2
+        }
+
         [DllImport("discord-rpc", EntryPoint = "Discord_Initialize", CallingConvention = CallingConvention.Cdecl)]
         public static extern void Initialize(string applicationId, ref EventHandlers handlers, bool autoRegister, string optionalSteamId);
 
@@ -23,24 +44,6 @@ namespace discord_rpc_vs
 
         [DllImport("discord-rpc", EntryPoint = "Discord_Respond", CallingConvention = CallingConvention.Cdecl)]
         public static extern void Respond(string userId, Reply reply);
-
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        public delegate void ReadyCallback();
-
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        public delegate void DisconnectedCallback(int errorCode, string message);
-
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        public delegate void ErrorCallback(int errorCode, string message);
-
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        public delegate void JoinCallback(string secret);
-
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        public delegate void SpectateCallback(string secret);
-
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        public delegate void RequestCallback(JoinRequest request);
 
         public struct RichPresence
         {
@@ -77,13 +80,6 @@ namespace discord_rpc_vs
             public string userId;
             public string username;
             public string avatar;
-        }
-
-        public enum Reply
-        {
-            No = 0,
-            Yes = 1,
-            Ignore = 2
         }
     }
 }
