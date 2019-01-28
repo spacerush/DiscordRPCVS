@@ -33,8 +33,8 @@ namespace discord_rpc_vs
     [PackageRegistration(AllowsBackgroundLoading = true, UseManagedResourcesOnly = true)]
     [InstalledProductRegistration("#110", "#112", "1.0", IconResourceID = 400)] // Info on this package for Help/About
     [ProvideMenuResource("Menus.ctmenu", 1)]
-    [ProvideService(UIContextGuids80.NoSolution)]
-    [ProvideService(UIContextGuids80.SolutionExists)]
+    [ProvideAutoLoad(UIContextGuids80.NoSolution, PackageAutoLoadFlags.BackgroundLoad)]
+    [ProvideAutoLoad(UIContextGuids80.SolutionExists, PackageAutoLoadFlags.BackgroundLoad)]
     [Guid(PackageGuidString)]
     [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "pkgdef, VS and vsixmanifest are valid VS terms")]
     public sealed class DiscordRPCVSPackage : AsyncPackage
@@ -124,62 +124,71 @@ namespace discord_rpc_vs
         /// </summary>
         /// <param name="windowActivated"></param>
         /// <param name="lastWindow"></param>
-        private void OnWindowSwitch(Window windowActivated, Window lastWindow)
+        private async void OnWindowSwitch(Window windowActivated, Window lastWindow)
         {
-            // Get Extension
-            string ext = "";
-
-            if (windowActivated.Document != null)
+            try
             {
-                ext = Path.GetExtension(windowActivated.Document.FullName);
-            }
+                await JoinableTaskFactory.SwitchToMainThreadAsync(DisposalToken);
 
-            // Update the RichPresence Images based on config.
-            if (Settings.IsLanguageImageLarge)
-            {
-                DiscordController.Presence = new DiscordRPC.RichPresence
+                // Get Extension
+                string ext = "";
+
+                if (windowActivated.Document != null)
                 {
-                    largeImageKey = _languages.ContainsKey(ext) ? _languages[ext] : "smallvs",
-                    largeImageText = _languages.ContainsKey(ext) ? _languages[ext] : "",
-                    smallImageKey = "visualstudio",
-                    smallImageText = "Visual Studio"
-                };
-            }
-            else if (!Settings.IsLanguageImageLarge)
-            {
-                DiscordController.Presence = new DiscordRPC.RichPresence
+                    ext = Path.GetExtension(windowActivated.Document.FullName);
+                }
+
+                // Update the RichPresence Images based on config.
+                if (Settings.IsLanguageImageLarge)
                 {
-                    largeImageKey = "visualstudio",
-                    largeImageText = "Visual Studio",
-                    smallImageKey = _languages.ContainsKey(ext) ? _languages[ext] : "smallvs",
-                    smallImageText = _languages.ContainsKey(ext) ? _languages[ext] : ""
-                };
+                    DiscordController.Presence = new DiscordRPC.RichPresence
+                    {
+                        largeImageKey = _languages.ContainsKey(ext) ? _languages[ext] : "smallvs",
+                        largeImageText = _languages.ContainsKey(ext) ? _languages[ext] : "",
+                        smallImageKey = "visualstudio",
+                        smallImageText = "Visual Studio"
+                    };
+                }
+                else if (!Settings.IsLanguageImageLarge)
+                {
+                    DiscordController.Presence = new DiscordRPC.RichPresence
+                    {
+                        largeImageKey = "visualstudio",
+                        largeImageText = "Visual Studio",
+                        smallImageKey = _languages.ContainsKey(ext) ? _languages[ext] : "smallvs",
+                        smallImageText = _languages.ContainsKey(ext) ? _languages[ext] : ""
+                    };
+                }
+
+                // Add things to the presence based on config.
+                if (Settings.IsFileNameShown && windowActivated.Document != null)
+                    DiscordController.Presence.details = Path.GetFileName(GetExactPathName(windowActivated.Document.FullName));
+
+                if (Settings.IsSolutionNameShown && _dte.Solution != null)
+                    DiscordController.Presence.state = "Developing " + Path.GetFileNameWithoutExtension(_dte.Solution.FileName);
+
+                // Initialize timestamp
+                if (Settings.IsTimestampShown && !InitializedTimestamp)
+                {
+                    DiscordController.Presence.startTimestamp = (int)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
+                    InitialTimestamp = DiscordController.Presence.startTimestamp;
+                    InitializedTimestamp = true;
+                }
+
+                // Reset it
+                if (Settings.IsTimestampResetEnabled && InitializedTimestamp && Settings.IsTimestampShown)
+                    DiscordController.Presence.startTimestamp = (int)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
+                // Set it equal to the initial timestamp (To not reset)
+                else if (Settings.IsTimestampShown && !Settings.IsTimestampResetEnabled)
+                    DiscordController.Presence.startTimestamp = InitialTimestamp;
+
+                if (Settings.IsPresenceEnabled)
+                    DiscordRPC.UpdatePresence(ref DiscordController.Presence);
             }
-
-            // Add things to the presence based on config.
-            if (Settings.IsFileNameShown && windowActivated.Document != null)
-                DiscordController.Presence.details = Path.GetFileName(GetExactPathName(windowActivated.Document.FullName));
-
-            if (Settings.IsSolutionNameShown && _dte.Solution != null)
-                DiscordController.Presence.state = "Developing " + Path.GetFileNameWithoutExtension(_dte.Solution.FileName);
-
-            // Initialize timestamp
-            if (Settings.IsTimestampShown && !InitializedTimestamp)
+            catch (Exception)
             {
-                DiscordController.Presence.startTimestamp = (int)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
-                InitialTimestamp = DiscordController.Presence.startTimestamp;
-                InitializedTimestamp = true;
+                // ignored
             }
-
-            // Reset it
-            if (Settings.IsTimestampResetEnabled && InitializedTimestamp && Settings.IsTimestampShown)
-                DiscordController.Presence.startTimestamp = (int)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
-            // Set it equal to the initial timestamp (To not reset)
-            else if (Settings.IsTimestampShown && !Settings.IsTimestampResetEnabled)
-                DiscordController.Presence.startTimestamp = InitialTimestamp;
-
-            if (Settings.IsPresenceEnabled)
-                DiscordRPC.UpdatePresence(ref DiscordController.Presence);
         }
 
         /// <summary>
