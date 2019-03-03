@@ -1,7 +1,7 @@
 # DiscordRPCVS
 >Enables Discord [Rich Presence](https://discordapp.com/rich-presence) For Visual Studio 2019 and below.
 As you're developing, this extension will automatically update your status on Discord to tell the world what you're coding!
-This extension is not available for download yet.
+You can install the latest release [here](https://marketplace.visualstudio.com/items?itemName=VisualProjects.drpcvs)
 
 <p align="center"> 
   <img src="https://cdn.discordapp.com/attachments/403361615082422282/551725625472450560/demonstration.png" width="242px" height="269px">
