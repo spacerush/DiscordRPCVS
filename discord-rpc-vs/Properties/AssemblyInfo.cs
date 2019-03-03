@@ -4,13 +4,13 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("discord_rpc_vs")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("DiscordRPC for VS2019")]
+[assembly: AssemblyDescription("An Discord rich presence extension for Visual Studio 2019.")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("discord_rpc_vs")]
-[assembly: AssemblyCopyright("")]
-[assembly: AssemblyTrademark("")]
+[assembly: AssemblyCompany("VisualDevelopment")]
+[assembly: AssemblyProduct("DiscordRPC for VS2019")]
+[assembly: AssemblyCopyright("Copyright VisualDevelopment.")]
+[assembly: AssemblyTrademark("Discord is a trademark of Discord.")]
 [assembly: AssemblyCulture("")]
 
 // Setting ComVisible to false makes the types in this assembly not visible 

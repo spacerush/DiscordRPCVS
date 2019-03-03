@@ -6,6 +6,7 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using discord_rpc_vs.Properties;
 using EnvDTE;
+using Microsoft;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Task = System.Threading.Tasks.Task;
@@ -59,9 +60,9 @@ namespace discord_rpc_vs
             { ".java", "java" },
             { ".go", "go" },
             { ".php", "php" },
-            { ".c", "clang" },
-            { ".h", "clang" },
-            { ".class", "java" }
+            { ".c", "c-clang" },
+            { ".h", "h-clang" },
+            { ".class", "C-java" }
         };
 
         /// <summary>
@@ -100,31 +101,40 @@ namespace discord_rpc_vs
         /// </summary>
         protected override async Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)
         {
-            // Switches to the UI thread in order to consume some services used in command initialization
-            await JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);
-
-            // Query service asynchronously from the UI thread
-            _dte = await GetServiceAsync(typeof(SDTE)) as DTE;
-
-            _dteEvents = _dte.Events;
-            _dteEvents.WindowEvents.WindowActivated += OnWindowSwitch;
-
-            if (Settings.IsPresenceEnabled)
+            try
             {
-                DiscordController.Initialize();
-                DiscordRPC.UpdatePresence(ref DiscordController.Presence);
-            }
+                // Switches to the UI thread in order to consume some services used in command initialization
+                await JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);
 
-            PresenceCommand.Initialize(this);
-            await base.InitializeAsync(cancellationToken, progress);
+                // Query service asynchronously from the UI thread
+                _dte = await GetServiceAsync(typeof(SDTE)) as DTE;
+                Assumes.Present(_dte);
+                _dteEvents = _dte.Events;
+                _dteEvents.WindowEvents.WindowActivated += OnWindowSwitch;
+
+                if (Settings.IsPresenceEnabled)
+                {
+                    DiscordController.Initialize();
+                    DiscordRPC.UpdatePresence(ref DiscordController.Presence);
+                }
+
+                PresenceCommand.Initialize(this);
+                await base.InitializeAsync(cancellationToken, progress);
+            }
+            catch (Exception)
+            {
+                //ignored
+            }
         }
 
+#pragma warning disable VSTHRD100 // Avoid async void methods
         /// <summary>
         ///     When switching between windows
         /// </summary>
         /// <param name="windowActivated"></param>
         /// <param name="lastWindow"></param>
         private async void OnWindowSwitch(Window windowActivated, Window lastWindow)
+#pragma warning restore VSTHRD100 // Avoid async void methods
         {
             try
             {
@@ -143,19 +153,19 @@ namespace discord_rpc_vs
                 {
                     DiscordController.Presence = new DiscordRPC.RichPresence
                     {
-                        largeImageKey = _languages.ContainsKey(ext) ? _languages[ext] : "smallvs",
+                        largeImageKey = _languages.ContainsKey(ext) ? _languages[ext] : "visualstudio",
                         largeImageText = _languages.ContainsKey(ext) ? _languages[ext] : "",
                         smallImageKey = "visualstudio",
-                        smallImageText = "Visual Studio"
+                        smallImageText = "Visual Studio 2019"
                     };
                 }
-                else if (!Settings.IsLanguageImageLarge)
+                else
                 {
                     DiscordController.Presence = new DiscordRPC.RichPresence
                     {
                         largeImageKey = "visualstudio",
-                        largeImageText = "Visual Studio",
-                        smallImageKey = _languages.ContainsKey(ext) ? _languages[ext] : "smallvs",
+                        largeImageText = "Visual Studio 2019",
+                        smallImageKey = _languages.ContainsKey(ext) ? _languages[ext] : "visualstudio",
                         smallImageText = _languages.ContainsKey(ext) ? _languages[ext] : ""
                     };
                 }

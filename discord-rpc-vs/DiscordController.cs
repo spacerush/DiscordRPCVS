@@ -5,7 +5,7 @@ namespace discord_rpc_vs
     internal class DiscordController
     {
         private DiscordRPC.EventHandlers _handlers;
-        public string ApplicationId = "391385173045936131";
+        public string ApplicationId = "551675228691103796";
         public string OptionalSteamId = string.Empty;
         public DiscordRPC.RichPresence Presence;
 
