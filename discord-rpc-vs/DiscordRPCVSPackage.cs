@@ -62,7 +62,13 @@ namespace discord_rpc_vs
             { ".php", "php" },
             { ".c", "c-clang" },
             { ".h", "h-clang" },
-            { ".class", "C-java" }
+            { ".class", "C-java" },
+            { ".fs", "fs-sharp" },
+            { ".ml", "ml-sharp" },
+            { ".fsi", "fsi-sharp" },
+            { ".mli", "mli-sharp" },
+            { ".fsx", "fsx-sharp" },
+            { ".fsscript", "fsscript-sharp" }
         };
 
         /// <summary>

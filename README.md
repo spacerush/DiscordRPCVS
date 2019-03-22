@@ -24,7 +24,7 @@ A neat feature with this extension compared to others is you can completely cust
 ![menu screenshot](https://i.imgur.com/JUqQHgC.png)
 
 # Contributing
-As I'm sure more more languages and file types are wanted to be supported, you can feel free to contribute. Feel free to fork the repository and open a pull request, and the extension shall be updated with the added changes.
+As I'm sure more languages and file types are wanted to be supported, you can feel free to contribute. Feel free to fork the repository and open a pull request, and the extension shall be updated with the added changes.
 
 # LICENSE
 All the code in this repository is licensed under. [MIT](https://github.com/VisualDevelopment/DiscordRPCVS/blob/master/LICENSE). In short, you're free to do whatever you'd like with this source.
