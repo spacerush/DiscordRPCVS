@@ -1,43 +1,41 @@
 ﻿using System;
-using DiscordRPC;
-using DiscordRPC.Logging;
 
 namespace discord_rpc_vs
 {
     internal class DiscordController
     {
-        public DiscordRpcClient client;
+        private DiscordRPC.EventHandlers _handlers;
+        public string ApplicationId = "551675228691103796";
+        public string OptionalSteamId = string.Empty;
+        public DiscordRPC.RichPresence Presence;
 
         /// <summary>
         ///     Initializes Discord RPC
         /// </summary>
         public void Initialize()
         {
-            client = new DiscordRpcClient("551675228691103796");
-            client.OnReady += ReadyCallback;
-            client.Logger = new ConsoleLogger() { Level = LogLevel.Warning };
-            client.OnClose += DisconnectedCallback;
-            client.OnError += ErrorCallback;
+            _handlers = new DiscordRPC.EventHandlers
+            {
+                readyCallback = ReadyCallback
+            };
+            _handlers.disconnectedCallback += DisconnectedCallback;
+            _handlers.errorCallback += ErrorCallback;
+            DiscordRPC.Initialize(ApplicationId, ref _handlers, true, OptionalSteamId);
         }
 
-        public void ReadyCallback(object sender, object e)
+        public void ReadyCallback()
         {
             Console.WriteLine("Discord RPC is ready!");
         }
 
-        public void DisconnectedCallback(object sender, object e)
+        public void DisconnectedCallback(int errorCode, string message)
         {
-            Console.WriteLine($"Error: {sender} - {e}");
+            Console.WriteLine($"Error: {errorCode} - {message}");
         }
 
-        public void ErrorCallback(object sender, object e)
+        public void ErrorCallback(int errorCode, string message)
         {
-            Console.WriteLine($"Error: {sender} - {e}");
-        }
-
-        public void Deinitialize()
-        {
-            client.Dispose();
+            Console.WriteLine($"Error: {errorCode} - {message}");
         }
     }
 }

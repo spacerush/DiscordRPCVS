@@ -72,7 +72,7 @@ namespace discord_rpc_vs
                 }
 
                 DiscordRPCVSPackage.DiscordController.Initialize();
-                DiscordRPCVSPackage.DiscordController.client.Invoke();
+                DiscordRPC.UpdatePresence(ref DiscordRPCVSPackage.DiscordController.Presence);
             };
 
             AddCommand(DisplayFileNameId, (s, e) => Settings.IsFileNameShown ^= true);
@@ -110,10 +110,7 @@ namespace discord_rpc_vs
         private static void DisableIfNeeded()
         {
             if (!Settings.IsPresenceEnabled)
-            {
-                DiscordRPCVSPackage.DiscordController.client.ClearPresence();
-                DiscordRPCVSPackage.DiscordController.Deinitialize();
-            }
+                DiscordRPC.Shutdown();
         }
 
         private static bool GetSettingValue(int commandId)

@@ -4,10 +4,14 @@
                  xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
     <Metadata>
 <<<<<<< HEAD
+<<<<<<< HEAD
         <Identity Id="VisualDevelopment.drpcvs" Version="2.3" Language="en-US"
 =======
         <Identity Id="discord_rpc_vs.VisualDevelopment.b011d8bc-b0bf-4cf1-9948-4bf45efb4d54" Version="2.1" Language="en-US"
 >>>>>>> parent of 3c7fcf9... Updated discord-rpc.dll
+=======
+        <Identity Id="VisualDevelopment.drpcvs" Version="2.2.5" Language="en-US"
+>>>>>>> parent of e447d75... Updated discord-rpc.dll
                   Publisher="VisualDevelopment" />
         <DisplayName>DiscordRPCVS</DisplayName>
         <Description xml:space="preserve">Enables Discord Rich Presence for Visual Studio 2017 and Visual Studio 2019</Description>

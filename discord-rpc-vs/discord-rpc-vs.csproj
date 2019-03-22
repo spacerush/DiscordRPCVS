@@ -57,6 +57,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="DiscordController.cs" />
+    <Compile Include="DiscordRPC.cs" />
     <Compile Include="DiscordRPCVSPackage.cs" />
     <Compile Include="PresenceCommand.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -82,6 +83,10 @@
       <ResourceName>Menus.ctmenu</ResourceName>
       <SubType>Designer</SubType>
     </VSCTCompile>
+    <Content Include="discord-rpc.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <Content Include="Resources\DiscordRPCVSPackage.ico" />
   </ItemGroup>
   <ItemGroup>
@@ -121,9 +126,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="DiscordRichPresence">
-      <Version>1.0.77</Version>
-    </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.CoreUtility">
       <Version>15.8.525</Version>
     </PackageReference>
