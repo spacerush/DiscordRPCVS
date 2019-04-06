@@ -1,15 +1,13 @@
+using Microsoft.VisualStudio.Shell;
 using System;
 using System.ComponentModel.Design;
-using Microsoft.VisualStudio.Shell;
 using static discord_rpc_vs.DiscordRPCVSPackage;
 
-namespace discord_rpc_vs
-{
+namespace discord_rpc_vs {
     /// <summary>
     ///     Command handler
     /// </summary>
-    internal sealed class PresenceCommand
-    {
+    internal sealed class PresenceCommand {
         internal const int TogglePresenceId = 0x1020;
         internal const int DisplayFileNameId = 0x1021;
         internal const int DisplaySolutionNameId = 0x1022;
@@ -32,24 +30,19 @@ namespace discord_rpc_vs
         ///     Adds our command handlers for menu (commands must exist in the command table file)
         /// </summary>
         /// <param name="package">Owner package, not null.</param>
-        private PresenceCommand(Package package)
-        {
+        private PresenceCommand (Package package) {
             this.package = package ?? throw new ArgumentNullException(nameof(package));
 
-            if (!(ServiceProvider.GetService(typeof(IMenuCommandService)) is OleMenuCommandService commandService))
-            {
+            if (!(ServiceProvider.GetService(typeof(IMenuCommandService)) is OleMenuCommandService commandService)) {
                 return;
             }
 
-            OleMenuCommand AddCommand(int id, EventHandler toggled)
-            {
+            OleMenuCommand AddCommand (int id, EventHandler toggled) {
                 toggled += (s, e) => Settings.Save();
-                var menuCommand = new OleMenuCommand(toggled, new CommandID(CommandSet, id));
+                OleMenuCommand menuCommand = new OleMenuCommand(toggled, new CommandID(CommandSet, id));
 
-                menuCommand.BeforeQueryStatus += (s, e) =>
-                {
-                    if (s is OleMenuCommand command)
-                    {
+                menuCommand.BeforeQueryStatus += (s, e) => {
+                    if (s is OleMenuCommand command) {
                         command.Checked = GetSettingValue(command.CommandID.ID);
                     }
                 };
@@ -58,21 +51,19 @@ namespace discord_rpc_vs
                 return menuCommand;
             }
 
-            OleMenuCommand presenceCmd = AddCommand(TogglePresenceId, (s, e) =>
-            {
+            OleMenuCommand presenceCmd = AddCommand(TogglePresenceId, (s, e) => {
                 Settings.IsPresenceEnabled ^= true;
                 DisableIfNeeded();
             });
 
-            presenceCmd.BeforeQueryStatus += (s, e) =>
-            {
-                if (Settings.IsPresenceEnabled)
-                {
-                    return;
+            presenceCmd.BeforeQueryStatus += (s, e) => {
+                if (Settings.IsPresenceEnabled) {
+                    DiscordRPCVSPackage.DiscordController.Initialize();
+                    DiscordRPC.UpdatePresence(ref DiscordRPCVSPackage.DiscordController.Presence);
                 }
-
-                DiscordRPCVSPackage.DiscordController.Initialize();
-                DiscordRPC.UpdatePresence(ref DiscordRPCVSPackage.DiscordController.Presence);
+                else {
+                    DiscordRPC.Shutdown();
+                }
             };
 
             AddCommand(DisplayFileNameId, (s, e) => Settings.IsFileNameShown ^= true);
@@ -80,7 +71,7 @@ namespace discord_rpc_vs
             AddCommand(DisplayTimestampId, (s, e) => Settings.IsTimestampShown ^= true);
 
             OleMenuCommand resetTimestampCmd = AddCommand(ResetTimestampId, (s, e) => Settings.IsTimestampResetEnabled ^= true);
-            resetTimestampCmd.BeforeQueryStatus += (s, e) => ((OleMenuCommand)s).Visible = Settings.IsTimestampShown;
+            resetTimestampCmd.BeforeQueryStatus += (s, e) => ((OleMenuCommand) s).Visible = Settings.IsTimestampShown;
 
             AddCommand(ToggleImagePositionId, (s, e) => Settings.IsLanguageImageLarge ^= true);
         }
@@ -99,31 +90,34 @@ namespace discord_rpc_vs
         ///     Initializes the singleton instance of the command.
         /// </summary>
         /// <param name="package">Owner package, not null.</param>
-        public static void Initialize(Package package)
-        {
+        public static void Initialize (Package package) {
             Instance = new PresenceCommand(package);
         }
 
         /// <summary>
         ///     Disables the presence if needed.
         /// </summary>
-        private static void DisableIfNeeded()
-        {
+        private static void DisableIfNeeded () {
             if (!Settings.IsPresenceEnabled)
                 DiscordRPC.Shutdown();
         }
 
-        private static bool GetSettingValue(int commandId)
-        {
-            switch (commandId)
-            {
-                case 0x1020: return Settings.IsPresenceEnabled;
-                case 0x1021: return Settings.IsFileNameShown;
-                case 0x1022: return Settings.IsSolutionNameShown;
-                case 0x1023: return Settings.IsTimestampShown;
-                case 0x1024: return Settings.IsTimestampResetEnabled;
-                case 0x1025: return Settings.IsLanguageImageLarge;
-                default: return false;
+        private static bool GetSettingValue (int commandId) {
+            switch (commandId) {
+                case 0x1020:
+                    return Settings.IsPresenceEnabled;
+                case 0x1021:
+                    return Settings.IsFileNameShown;
+                case 0x1022:
+                    return Settings.IsSolutionNameShown;
+                case 0x1023:
+                    return Settings.IsTimestampShown;
+                case 0x1024:
+                    return Settings.IsTimestampResetEnabled;
+                case 0x1025:
+                    return Settings.IsLanguageImageLarge;
+                default:
+                    return false;
             }
         }
     }

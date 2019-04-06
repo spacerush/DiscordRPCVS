@@ -1,18 +1,17 @@
+using discord_rpc_vs.Properties;
+using EnvDTE;
+using Microsoft;
+using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading;
-using discord_rpc_vs.Properties;
-using EnvDTE;
-using Microsoft;
-using Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio.Shell.Interop;
 using Task = System.Threading.Tasks.Task;
 
-namespace discord_rpc_vs
-{
+namespace discord_rpc_vs {
     /// <summary>
     ///     This is the class that implements the package exposed by this assembly.
     /// </summary>
@@ -38,8 +37,7 @@ namespace discord_rpc_vs
     [ProvideAutoLoad(UIContextGuids80.SolutionExists, PackageAutoLoadFlags.BackgroundLoad)]
     [Guid(PackageGuidString)]
     [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "pkgdef, VS and vsixmanifest are valid VS terms")]
-    public sealed class DiscordRPCVSPackage : AsyncPackage
-    {
+    public sealed class DiscordRPCVSPackage : AsyncPackage {
         /// <summary>
         ///     DiscordRPCVSPackage GUID string.
         /// </summary>
@@ -99,10 +97,8 @@ namespace discord_rpc_vs
         ///     Initialization of the package; this method is called right after the package is sited, so this is the place
         ///     where you can put all the initialization code that rely on services provided by VisualStudio.
         /// </summary>
-        protected override async Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)
-        {
-            try
-            {
+        protected override async Task InitializeAsync (CancellationToken cancellationToken, IProgress<ServiceProgressData> progress) {
+            try {
                 // Switches to the UI thread in order to consume some services used in command initialization
                 await JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);
 
@@ -112,8 +108,7 @@ namespace discord_rpc_vs
                 _dteEvents = _dte.Events;
                 _dteEvents.WindowEvents.WindowActivated += OnWindowSwitch;
 
-                if (Settings.IsPresenceEnabled)
-                {
+                if (Settings.IsPresenceEnabled) {
                     DiscordController.Initialize();
                     DiscordRPC.UpdatePresence(ref DiscordController.Presence);
                 }
@@ -121,8 +116,7 @@ namespace discord_rpc_vs
                 PresenceCommand.Initialize(this);
                 await base.InitializeAsync(cancellationToken, progress);
             }
-            catch (Exception)
-            {
+            catch (Exception) {
                 //ignored
             }
         }
@@ -133,42 +127,33 @@ namespace discord_rpc_vs
         /// </summary>
         /// <param name="windowActivated"></param>
         /// <param name="lastWindow"></param>
-        private async void OnWindowSwitch(Window windowActivated, Window lastWindow)
+        private async void OnWindowSwitch (Window windowActivated, Window lastWindow)
 #pragma warning restore VSTHRD100 // Avoid async void methods
         {
-            try
-            {
+            try {
                 await JoinableTaskFactory.SwitchToMainThreadAsync(DisposalToken);
 
                 // Get Extension
                 string ext = "";
 
-                if (windowActivated.Document != null)
-                {
+                if (windowActivated.Document != null) {
                     ext = Path.GetExtension(windowActivated.Document.FullName);
                 }
 
                 // Update the RichPresence Images based on config.
-                if (Settings.IsLanguageImageLarge)
-                {
-                    DiscordController.Presence = new DiscordRPC.RichPresence
-                    {
+                DiscordController.Presence = Settings.IsLanguageImageLarge
+                    ? new DiscordRPC.RichPresence {
                         largeImageKey = _languages.ContainsKey(ext) ? _languages[ext] : "visualstudio",
                         largeImageText = _languages.ContainsKey(ext) ? _languages[ext] : "",
                         smallImageKey = "visualstudio",
                         smallImageText = "Visual Studio 2019"
-                    };
-                }
-                else
-                {
-                    DiscordController.Presence = new DiscordRPC.RichPresence
-                    {
+                    }
+                    : new DiscordRPC.RichPresence {
                         largeImageKey = "visualstudio",
                         largeImageText = "Visual Studio 2019",
                         smallImageKey = _languages.ContainsKey(ext) ? _languages[ext] : "visualstudio",
                         smallImageText = _languages.ContainsKey(ext) ? _languages[ext] : ""
                     };
-                }
 
                 // Add things to the presence based on config.
                 if (Settings.IsFileNameShown && windowActivated.Document != null)
@@ -178,25 +163,27 @@ namespace discord_rpc_vs
                     DiscordController.Presence.state = "Developing " + Path.GetFileNameWithoutExtension(_dte.Solution.FileName);
 
                 // Initialize timestamp
-                if (Settings.IsTimestampShown && !InitializedTimestamp)
-                {
-                    DiscordController.Presence.startTimestamp = (int)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
+                if (Settings.IsTimestampShown && !InitializedTimestamp) {
+                    DiscordController.Presence.startTimestamp = (int) DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
                     InitialTimestamp = DiscordController.Presence.startTimestamp;
                     InitializedTimestamp = true;
                 }
 
                 // Reset it
                 if (Settings.IsTimestampResetEnabled && InitializedTimestamp && Settings.IsTimestampShown)
-                    DiscordController.Presence.startTimestamp = (int)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
+                    DiscordController.Presence.startTimestamp = (int) DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
                 // Set it equal to the initial timestamp (To not reset)
                 else if (Settings.IsTimestampShown && !Settings.IsTimestampResetEnabled)
                     DiscordController.Presence.startTimestamp = InitialTimestamp;
 
-                if (Settings.IsPresenceEnabled)
+                if (Settings.IsPresenceEnabled) {
+                    DiscordController.Initialize();
                     DiscordRPC.UpdatePresence(ref DiscordController.Presence);
+                }
+                else
+                    DiscordRPC.Shutdown();
             }
-            catch (Exception)
-            {
+            catch (Exception) {
                 // ignored
             }
         }
@@ -206,23 +193,18 @@ namespace discord_rpc_vs
         /// </summary>
         /// <param name="pathName"></param>
         /// <returns></returns>
-        public static string GetExactPathName(string pathName)
-        {
-            if (!(File.Exists(pathName) || Directory.Exists(pathName)))
-            {
+        public static string GetExactPathName (string pathName) {
+            if (!(File.Exists(pathName) || Directory.Exists(pathName))) {
                 return pathName;
             }
 
-            var di = new DirectoryInfo(pathName);
+            DirectoryInfo di = new DirectoryInfo(pathName);
 
-            if (di.Parent != null)
-            {
-                return Path.Combine(
+            return di.Parent != null
+                ? Path.Combine(
                     GetExactPathName(di.Parent.FullName),
-                    di.Parent.GetFileSystemInfos(di.Name)[0].Name);
-            }
-
-            return di.Name.ToUpper();
+                    di.Parent.GetFileSystemInfos(di.Name)[0].Name)
+                : di.Name.ToUpper();
         }
 
         /// <inheritdoc />
@@ -231,8 +213,7 @@ namespace discord_rpc_vs
         /// </summary>
         /// <param name="canClose">Returns true if the shell can be closed, otherwise false.</param>
         /// <returns>S_OK(0) if the method succeeded, otherwise an error code.</returns>
-        protected override int QueryClose(out bool canClose)
-        {
+        protected override int QueryClose (out bool canClose) {
             DiscordRPC.Shutdown();
             return base.QueryClose(out canClose);
         }

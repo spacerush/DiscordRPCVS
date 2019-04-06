@@ -1,52 +1,48 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-namespace discord_rpc_vs
-{
-    public class DiscordRPC
-    {
+namespace discord_rpc_vs {
+    public class DiscordRPC {
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        public delegate void DisconnectedCallback(int errorCode, string message);
+        public delegate void DisconnectedCallback (int errorCode, string message);
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        public delegate void ErrorCallback(int errorCode, string message);
+        public delegate void ErrorCallback (int errorCode, string message);
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        public delegate void JoinCallback(string secret);
+        public delegate void JoinCallback (string secret);
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        public delegate void ReadyCallback();
+        public delegate void ReadyCallback ();
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        public delegate void RequestCallback(JoinRequest request);
+        public delegate void RequestCallback (JoinRequest request);
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        public delegate void SpectateCallback(string secret);
+        public delegate void SpectateCallback (string secret);
 
-        public enum Reply
-        {
+        public enum Reply {
             No = 0,
             Yes = 1,
             Ignore = 2
         }
 
         [DllImport("discord-rpc", EntryPoint = "Discord_Initialize", CallingConvention = CallingConvention.Cdecl)]
-        public static extern void Initialize(string applicationId, ref EventHandlers handlers, bool autoRegister, string optionalSteamId);
+        public static extern void Initialize (string applicationId, ref EventHandlers handlers, bool autoRegister, string optionalSteamId);
 
         [DllImport("discord-rpc", EntryPoint = "Discord_Shutdown", CallingConvention = CallingConvention.Cdecl)]
-        public static extern void Shutdown();
+        public static extern void Shutdown ();
 
         [DllImport("discord-rpc", EntryPoint = "Discord_RunCallbacks", CallingConvention = CallingConvention.Cdecl)]
-        public static extern void RunCallbacks();
+        public static extern void RunCallbacks ();
 
         [DllImport("discord-rpc", EntryPoint = "Discord_UpdatePresence", CallingConvention = CallingConvention.Cdecl)]
-        public static extern void UpdatePresence(ref RichPresence presence);
+        public static extern void UpdatePresence (ref RichPresence presence);
 
         [DllImport("discord-rpc", EntryPoint = "Discord_Respond", CallingConvention = CallingConvention.Cdecl)]
-        public static extern void Respond(string userId, Reply reply);
+        public static extern void Respond (string userId, Reply reply);
 
-        public struct RichPresence
-        {
+        public struct RichPresence {
             public string state; /* max 128 bytes */
             public string details; /* max 128 bytes */
             public long startTimestamp;
@@ -64,8 +60,7 @@ namespace discord_rpc_vs
             public bool instance;
         }
 
-        public struct EventHandlers
-        {
+        public struct EventHandlers {
             public ReadyCallback readyCallback;
             public DisconnectedCallback disconnectedCallback;
             public ErrorCallback errorCallback;
@@ -75,8 +70,7 @@ namespace discord_rpc_vs
         }
 
         [Serializable]
-        public struct JoinRequest
-        {
+        public struct JoinRequest {
             public string userId;
             public string username;
             public string avatar;
